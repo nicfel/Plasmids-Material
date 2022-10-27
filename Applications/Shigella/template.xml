@@ -1,0 +1,241 @@
+<beast version="2.0"
+       namespace="beast.core
+                 :beast.core.util
+                 :beast.core.parameter
+                 :beast.evolution.alignment
+                 :beast.evolution.likelihood
+                 :beast.evolution.tree
+                 :beast.evolution.tree.coalescent
+                 :beast.evolution.sitemodel
+                 :beast.evolution.substitutionmodel
+                 :beast.evolution.operators
+                 :beast.math.distributions
+                 :feast.simulation
+                 :feast.fileio
+                 :plasmids.network
+                 :coalre.statistics
+                 :plasmids.simulator
+                 :plasmids.operators
+                 :coalre.operators
+                 :plasmids.distribution
+                 :coalre.network">
+
+    insert_alignment
+
+
+    <map name="Uniform" >beast.math.distributions.Uniform</map>
+    <map name="Exponential" >beast.math.distributions.Exponential</map>
+    <map name="LogNormal" >beast.math.distributions.LogNormalDistributionModel</map>
+    <map name="Normal" >beast.math.distributions.Normal</map>
+    <map name="Beta" >beast.math.distributions.Beta</map>
+    <map name="Gamma" >beast.math.distributions.Gamma</map>
+    <map name="LaplaceDistribution" >beast.math.distributions.LaplaceDistribution</map>
+    <map name="prior" >beast.math.distributions.Prior</map>
+    <map name="InverseGamma" >beast.math.distributions.InverseGamma</map>
+    <map name="OneOnX" >beast.math.distributions.OneOnX</map>
+
+
+    insert_taxa
+    <trait spec="TraitSet" traitname="date" dateFormat="yyyy-M-dd" id="traitSet">
+      insert_sampling_times
+        <taxa idref="taxonSet"/>
+    </trait>
+
+    insert_run_header
+
+
+
+        <state>
+          insert_seg_tree_state
+          
+          <stateNode id="network" spec="SimulatedCoalescentWithPlamidsNetwork"
+                     nPlasmids="insert_nr_plasmids" enableSegmentTreeUpdate="false">
+
+              <traitSet idref="traitSet"/>
+
+              <populationModel spec="ConstantPopulation">
+                  <popSize spec="RealParameter" value="100"/>
+              </populationModel>
+              <plasmidTransferRate spec="RealParameter" value="0"/>
+              insert_taxonsets
+          </stateNode>
+          <stateNode id="plasmidTransferRate" spec="RealParameter" value="0.1"/>
+        <parameter id="clockRate.c" name="stateNode">1</parameter>
+        <parameter id="popSize" name="stateNode">2</parameter>
+        
+        <parameter id="Ne" name="stateNode" dimension="1" upper="5000">100</parameter>
+        <parameter id="sigma.Ne" name="stateNode" dimension="1">2</parameter>
+        <parameter id="rateShifts" name="stateNode" dimension="1">1 2 3 4 5 6 7 8 9 10 100 1000 10000000</parameter>
+        insert_parameters
+        </state>
+        
+        <init spec='beast.util.ClusterTree' id='UPGMATree.t:XYZ26'
+          initial="@insert_corename.tree" clusterType='upgma' taxa='@insert_corename'/>
+
+        <init spec='plasmids.util.InitFromTree' id='initnetwork'
+          tree="@insert_corename.tree" network='@network'>
+          insert_taxonsets
+        </init>
+
+        
+        <init spec="SegmentTreeInitializer" network="@network">
+          insert_seg_tree
+        </init>
+
+
+        <distribution id="posterior" spec="CompoundDistribution">
+            <distribution id="likelihood" spec="CompoundDistribution">
+              insert_tree_likelihood
+            </distribution>
+
+            <distribution id="prior" spec="CompoundDistribution">
+                <distribution id="networkPrior" spec="CoalescentWithPlasmids">
+                    <networkIntervals spec="PlasmidNetworkIntervals" network="@network">
+                        <plasmidTransferRate idref="plasmidTransferRate"/>
+                    </networkIntervals>
+
+<!--                    <populationModel id="Skygrid" spec="nab.skygrid.Skygrowth" logNe="@Ne" rateShifts="@rateShifts"/>-->
+                    <populationModel id="constPop" spec="ConstantPopulation">
+                        <popSize idref="Ne"/>
+                    </populationModel>
+
+
+                </distribution>
+
+                <prior id="ClockPrior.c" name="distribution" x="@clockRate.c">
+                  <OneOnX id="Uniform.0" name="distr"/>
+                </prior>
+                
+<!--                <prior id="Sigmaprior1" name="distribution" x="@sigma.Ne">-->
+<!--                    <LogNormal id="Uniform.333" name="distr" M="0" S="4"/>-->
+<!--                </prior>-->
+<!--                <distribution spec='beast.mascot.skyline.LogSmoothingPrior' NeLog="@Ne">-->
+<!--                    <distr spec="beast.math.distributions.Normal"  mean="0">-->
+<!--                        <sigma idref="sigma.Ne"/>-->
+<!--                    </distr>-->
+<!--                    <initialDistr spec="beast.math.distributions.Normal"  mean="0" sigma="3"/>-->
+<!--                </distribution>-->
+
+
+                insert_priors
+
+                <prior id="PopSizePrior" name="distribution" x="@Ne">
+                  <LogNormal id="LogNormalDistributionModel.PopSize" name="distr" M="0" S="4"/>
+                </prior>
+
+                <distribution spec="beast.math.distributions.Prior" x="@plasmidTransferRate">
+                    <!--distr spec="beast.math.distributions.Uniform" lower="0.0" upper="10.0"/-->
+                    <distr spec="beast.math.distributions.LogNormalDistributionModel" M="0" S="4"/>
+                </distribution>
+
+
+            </distribution>
+        </distribution>
+
+
+        
+<!--        <operator id="AMVGoperator1" spec="AdaptableVarianceMultivariateNormalOperator" every="100" beta="0.5" scaleFactor="0.01" weight="5.0" initial="10">-->
+<!--                <transformations spec="beast.util.Transform$NoTransform" f="@Ne"/>-->
+<!--                <transformations spec="beast.util.Transform$LogTransform" f="@sigma.Ne"/>-->
+<!--       </operator>-->
+
+
+        <operator id="PlasmidTrasnferRateOperator" spec="ScaleOperator"
+                  weight="5.0" scaleFactor="0.8"  optimise="true"  parameter="@plasmidTransferRate">
+        </operator>
+
+        <operator id="PopSizeScaler" spec="ScaleOperator"
+                  weight="5.0"  scaleFactor="0.8" optimise="false" parameter="@Ne">
+        </operator>
+
+        insert_operators
+
+
+<!--        <operator id="FixMeanMutationRatesOperator" spec="DeltaExchangeOperator" delta="0.75" weight="3.0">
+          insert_mut_par
+          <weightvector id="weightparameter" spec="parameter.IntegerParameter" dimension="1" estimate="false">
+            insert_weights
+          </weightvector>
+        </operator>-->
+
+        <operator id="upDownOperator" spec="NetworkScaleOperator" network="@network" weight="1.0">
+            insert_seg_tree
+            <upParameter idref="Ne"/>
+            <downParameter idref="plasmidTransferRate"/>
+            insert_mut_par
+        </operator>
+        
+        <operator id="upDownOperator2" spec="UpDownOperator" scaleFactor="0.8" weight="1.0">
+            insert_muts_par
+        </operator>
+        
+        <operator spec="AddRemovePlasmid" network="@network" alpha="1.0" weight="5.0">
+          insert_seg_tree
+        </operator>
+
+        <operator spec="AddRemovePlasmidCoalescent" network="@network" weight="30.0" coalescentWithPlasmids="@networkPrior">
+          insert_seg_tree
+        </operator>
+
+        <operator spec="UniformNetworkNodeHeightOperator" network="@network" weight="5.0">
+          insert_seg_tree
+        </operator>
+
+        <operator id="NetworkScale" spec="NetworkScaleOperator" network="@network" weight="5.0">
+          insert_seg_tree
+        </operator>
+
+        <operator id="NetworkScaleRootOnly" spec="NetworkScaleOperator" network="@network" scaleRootOnly="true" weight="1.0">
+          insert_seg_tree
+        </operator>
+
+        <operator spec="PlasmidNetworkExchange" network="@network" isNarrow="false" weight="10.0">
+          insert_seg_tree
+        </operator>
+
+        <operator spec="PlasmidNetworkExchange" network="@network" isNarrow="true" weight="10.0">
+          insert_seg_tree
+        </operator>
+
+        <operator spec="SubPlasmidNetworkSlide" network="@network" weight="30.0">
+          insert_seg_tree
+        </operator>
+
+        <operator id="GibbsOperatorAbovePlasmidRoots" spec="GibbsOperatorAbovePlasmidRoots" network="@network" weight="3.0"  coalescentWithPlasmids="@networkPrior">
+          insert_seg_tree
+        </operator>
+
+
+        <logger spec="Logger" logEvery="50000" mode="tree" fileName="$(filebase).network.trees">
+            <log spec="plasmids.statistics.PlasmidNetworkLogger" network="@network"/>
+        </logger>
+
+        insert_seg_logger
+
+
+        <logger spec="Logger" logEvery="50000" fileName="$(filebase).log">
+            <log idref="posterior"/>
+            <log idref="likelihood"/>
+            <log idref="networkPrior"/>
+            <log spec="NetworkStatsLogger" network="@network"/>
+            <log spec="plasmids.statistics.PlasmidNetworkStatsLogger" network="@network" plasmidTransferRate="@plasmidTransferRate">
+              insert_seg_tree
+            </log>
+            <log idref="Ne"/>
+            <log idref="sigma.Ne"/>
+           <log idref="plasmidTransferRate"/>
+            insert_stats_log
+            <log idref="clockRate.c"/>
+            insert_param_log
+        </logger>
+
+        <logger id="screenlog" spec="Logger" logEvery="10000">
+            <log idref="posterior"/>
+            <log idref="likelihood"/>
+            <log idref="prior"/>
+            <log spec="NetworkStatsLogger" network="@network"/>
+            <log spec="ESS" arg="@posterior"/>
+        </logger>
+
+    </run>
+</beast>
