@@ -1,0 +1,87 @@
+<beast version="2.0"
+       namespace="beast.core
+                 :beast.core.util
+                 :beast.core.parameter
+                 :beast.evolution.alignment
+                 :beast.evolution.likelihood
+                 :beast.evolution.tree
+                 :beast.evolution.tree.coalescent
+                 :beast.evolution.sitemodel
+                 :beast.evolution.substitutionmodel
+                 :beast.evolution.operators
+                 :beast.math.distributions
+                 :feast.simulation
+                 :plasmids.network
+                 :coalre.statistics
+                 :plasmids.simulator
+                 :plasmids.operators
+                 :coalre.operators
+                 :plasmids.distribution">
+
+    <run spec="MCMC" chainLength="100000000">
+
+        <state>
+            <stateNode id="network" spec="SimulatedCoalescentWithPlamidsNetwork" nPlasmids="5" enableSegmentTreeUpdate="false">
+                <populationModel spec="ConstantPopulation">
+                    <popSize spec="RealParameter" value="0.5"/>
+                </populationModel>
+
+                <plasmidTransferRate spec="RealParameter" value=".1 .2 .3 .01 .05"/>
+
+                <traitSet spec="TraitSet" traitname="date-backward" id="traitSet">
+                    <taxa spec="TaxonSet" id="taxonSet">
+                        <taxon spec="Taxon" id="t1"/>
+                        <taxon spec="Taxon" id="t2"/>
+                        <taxon spec="Taxon" id="t3"/>
+                        <taxon spec="Taxon" id="t4"/>
+                        <taxon spec="Taxon" id="t5"/>
+                    </taxa>
+
+                    t1=0, t2=0.1, t3=0.2, t4=0.3, t5=0.4
+                </traitSet>
+            </stateNode>
+        </state>
+
+        <distribution id="coalDensity" spec="CoalescentWithPlasmids">
+            <networkIntervals spec="PlasmidNetworkIntervals" network="@network">
+                <plasmidTransferRate spec="RealParameter" value=".1 .2 .3 .01 .05"/>
+            </networkIntervals>
+
+            <populationModel spec="ConstantPopulation">
+                <popSize spec="RealParameter" value="0.5"/>
+            </populationModel>
+
+        </distribution>
+
+        <operator spec="AddRemovePlasmid" network="@network" alpha="1.0" weight="1.0"/>
+        <operator spec="AddRemovePlasmidCoalescent" network="@network" weight="1.0" coalescentWithPlasmids="@coalDensity"/>
+        
+        <operator id="NetworkScale" spec="NetworkScaleOperator"
+                  network="@network" weight="1.0"/>
+        <operator id="RootScale" spec="NetworkScaleOperator" scaleRootOnly="true"
+                network="@network" weight="1.0"/>
+
+                  
+        <operator spec="PlasmidNetworkExchange" network="@network" isNarrow="true" weight="1"/>
+        <operator spec="PlasmidNetworkExchange" network="@network" isNarrow="false" weight="1"/>
+        
+        <operator spec="SubPlasmidNetworkSlide" network="@network" weight="1"/>
+        <operator spec="UniformNetworkNodeHeightOperator" network="@network" weight="1"/>
+
+<!--        <operator id="GibbsOperatorAbovePlasmidRoots" spec="GibbsOperatorAbovePlasmidRoots" network="@network" weight="3.0"  coalescentWithPlasmids="@coalDensity"/>-->
+
+
+        <logger spec="Logger" logEvery="1000" mode="tree" fileName="$(filebase).trees">
+            <log idref="network"/>
+        </logger>
+
+        <logger spec="Logger" logEvery="2500" fileName="$(filebase).log">
+            <log spec="NetworkStatsLogger" network="@network"/>
+        </logger>
+
+        <logger spec="Logger" logEvery="2500">
+            <log spec="NetworkStatsLogger" network="@network"/>
+        </logger>
+    </run>
+
+</beast>
