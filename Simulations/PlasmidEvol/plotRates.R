@@ -126,13 +126,15 @@ p = ggplot(dat[dat$name!="core1" & dat$snp>0,], aes(x=snp+offset*0.1, y=rate, co
   scale_y_log10()+
   scale_x_log10()+
   geom_hline(yintercept = 0.0005)+
-  scale_color_discrete_diverging()+coord_cartesian(ylim=c(0.000001,0.01))+
+  coord_cartesian(ylim=c(0.000001,0.01))+
   # facet_wrap(method~.)+
   # theme(axis.text.x=element_blank())+
   xlab("number of variable sites")+ylab("evolutionary rate") +
-  scale_color_discrete_diverging()
+  scale_color_manual(values=c("#448C82", "#C35F35"))+
+  theme(legend.position = "none")
 plot(p)
 
+  
 ggsave(plot=p,paste("../../../Plasmids-Text/Figures/clock_rate_plasmids.pdf", sep=""),width=9, height=4)
 
 rate_shifts = c(seq(0,20,2),100,200)
