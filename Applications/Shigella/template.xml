@@ -40,7 +40,7 @@
               insert_taxonsets
           </stateNode>
           <stateNode spec="parameter.RealParameter" id="plasmidTransferRate" value="0.1"/>
-        <parameter spec="parameter.RealParameter" id="clockRate.c" name="stateNode">1</parameter>
+        <parameter spec="parameter.RealParameter" id="clockRate.c" name="stateNode">0.0005</parameter>
         <parameter spec="parameter.RealParameter" id="popSize" name="stateNode">2</parameter>
         
         <parameter spec="parameter.RealParameter" id="Ne" name="stateNode" dimension="1" upper="5000">100</parameter>
@@ -140,19 +140,18 @@
 
         insert_operators
 
-
-<!--        <operator id="FixMeanMutationRatesOperator" spec="DeltaExchangeOperator" delta="0.75" weight="3.0">
+        <operator id="FixMeanMutationRatesOperator" spec="DeltaExchangeOperator" delta="0.75" weight="3.0">
           insert_mut_par
           <weightvector id="weightparameter" spec="parameter.IntegerParameter" dimension="1" estimate="false">
             insert_weights
           </weightvector>
-       </operator>-->
+        </operator>
 
         <operator id="upDownOperator" spec="coalre.operators.NetworkScaleOperator" network="@network" weight="1.0" scaleFactor="0.01">
             insert_seg_tree
             <upParameter idref="Ne"/>
             <downParameter idref="plasmidTransferRate"/>
-            insert_mut_par
+            <downParameter idref="clockRate.c"/>
         </operator>
         
        

@@ -1,0 +1,11 @@
+name: plasmids
+channels:
+  - defaults
+dependencies:
+  - python
+  - matplotlib
+  - numpy
+  - scipy
+  - ipython
+  - requests
+  - jupyter

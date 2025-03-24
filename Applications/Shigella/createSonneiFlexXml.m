@@ -5,8 +5,8 @@ clear
 weights_name = {'equal','weighted'};
 
 
-clockrates = [3.7E-4 9.95E-5 1.662E-5];
-for w = 1 : 1
+clockrates = [ 9.1586e-05 10000000 3.3748e-04];
+for w = 1
 
     for cutoff = 50
 
@@ -14,121 +14,28 @@ for w = 1 : 1
         meta1 = importdata('data/Sonnei_MonthYear_07082022.txt');
         meta2 = importdata('data/ShigFlex_01092022_YearMonth.txt');
 
-        flex = fastaread('data/Aln_Trees/Flexneri_ref/Sflex_NC_004337_26082022clean_gubbinsv241.filtered_polymorphic_sites.fasta');
+        flex = fastaread('data/Flex/Sflex_NC_004337_21022024_NoSero6_cleanGubbinsV241.filtered_polymorphic_sites.fasta');
+        sonnei = fastaread('data/Sonnei/Sson_NC_007384_18122023_cleanGubbinsV241.filtered_polymorphic_sites.snpsites.fasta');
 
-        pdist = zeros(length(flex), length(flex));
-
-        for a = 1 : length(flex)
-            disp(a)
-            for b = a+1:length(flex)
-                indices = find(flex(a).Sequence~=flex(b).Sequence);
-                red_indices = find(flex(a).Sequence(indices)=='-' | flex(b).Sequence(indices)=='-');
-                gaps = find(flex(a).Sequence=='-' | flex(b).Sequence=='-');
-
-                pdist(a,b) = (length(indices)-length(red_indices))/(length(flex(a).Sequence)-length(gaps));
-                pdist(b,a) = pdist(a,b);
-            end
-        end
-
-        members = cell(0,0);
-        already_clustered = [];
-
-        min_dist=0.3;
-
-        c = 1;
-        cl_size = 0;
-        for i = 1:length(flex)
-            if ~ismember(i, already_clustered)
-                newmembers = find(pdist(i, :)<min_dist);
-                members{c} = newmembers;
-
-                if sum(ismember(newmembers, already_clustered))>0
-                    error('aladasdal');
-                end
-                while ~isempty(newmembers)
-                    tmp = [];
-                    for j = 1 : length(newmembers)
-                        tmp = [tmp,find(pdist(newmembers(j), :)<min_dist)];
-                    end
-                    tmp = unique(tmp);
-                    newmembers = tmp(~ismember(tmp,members{c}));
-
-                    if sum(ismember(newmembers, already_clustered))>0
-                        error('adasdsalal');
-                    end
-                    members{c} = [members{c} newmembers];
-                end
-                cl_size = cl_size+length(members{c});
-                already_clustered = [already_clustered, members{c}];
-                c=c+1;    
-            end
-        end
-
-        % check that there are two groups exactly
-        if length(members)~=2
-            error('wrong group number');
-        end
-        fasta1 = flex(members{1});
-        fasta2 = flex(members{2});    
-        fasta3 = fastaread('data/Aln_Trees/Ss046_Sonnei_ref/Sson_NC_007384_29042022clean_gubbinsv241.filtered_polymorphic_sites.fasta');
-
-        % get all constant sites from fasta1 and fasta2
-        seq='';
-        for i=1:length(fasta1)
-           seq=[seq;fasta1(i).Sequence];
-        end
-        const1 = false(1,length(fasta1(1).Sequence));
-        for i=1:length(seq)
-            u = unique(seq(:,i));
-            u(u=='N') = [];
-            u(u=='-') = [];
-            if length(u)<2
-                const1(i) = true;
-            end
-        end
-        seq='';
-        for i=1:length(fasta2)
-           seq=[seq;fasta2(i).Sequence];
-        end
-
-        const2 = false(1,length(fasta2(1).Sequence));
-        for i=1:length(seq)
-            u = unique(seq(:,i));
-            u(u=='N') = [];
-            u(u=='-') = [];
-            if length(u)<2
-                const2(i) = true;
-            end
-        end
-
+        % Create a combine fasta file
         c=1;    
         clear fasta_comb;    
-        % combine fastas
-        for i = 1 : length(fasta1)
-            fasta_comb(c).Header = fasta1(i).Header;
-            fasta_comb(c).Sequence = [fasta1(i).Sequence(~const1), repmat('N', 1,sum(~const2)+length(fasta3(1).Sequence))];
+        for i = 1 : length(flex)
+            fasta_comb(c).Header = flex(i).Header;
+            fasta_comb(c).Sequence = [flex(i).Sequence, repmat('N', 1,length(sonnei(1).Sequence))];
             c=c+1;
         end
-        for i = 1 : length(fasta2)
-            fasta_comb(c).Header = fasta2(i).Header;
-            fasta_comb(c).Sequence = [repmat('N', 1,sum(~const1)) fasta2(i).Sequence(~const2) repmat('N',1,length(fasta3(1).Sequence))];
-            c=c+1;
-        end    
-        for i = 1 : length(fasta3)
-            fasta_comb(c).Header = fasta3(i).Header;
-            fasta_comb(c).Sequence = [repmat('N', 1,sum(~const1)+sum(~const2)) fasta3(i).Sequence];
+        for i = 1 : length(sonnei)
+            fasta_comb(c).Header = sonnei(i).Header;
+            fasta_comb(c).Sequence = [repmat('N', 1,length(flex(1).Sequence)) sonnei(i).Sequence];
             c=c+1;
         end
 
+        delete('data/chromosome_concat.aln');
+        fastawrite('data/chromosome_concat.aln',fasta_comb);
 
-
-
-        delete('data/Aln_Trees/FlexSon_Ss046/SonFlex_NC_007384_concat.aln');
-        fastawrite('data/Aln_Trees/FlexSon_Ss046/SonFlex_NC_007384_concat.aln',fasta_comb);
-
-        NC_007384 = struct2table(fastaread('data/Aln_Trees/FlexSon_Ss046/SonFlex_NC_007384_concat.aln'));
-    %     NC_007385 = struct2table(fastaread('data/Aln_Trees/FlexSon_Ss046/SonFlex_NC_007385_Over50_23082022.aln'));
-        LN624486 = struct2table(fastaread('data/Aln_Trees/LN624486_MDR_plasmid_aln/LN624486_SonFlex_Over70_26082022.aln'));
+        NC_007384 = struct2table(fastaread('data/chromosome_concat.aln'));
+        LN624486 = struct2table(fastaread('data/pksr100/SonFlex_LN624486_over80.filtered95.aln'));
 
         ids = [meta1.textdata(2:end,1);meta2.textdata(2:end,1)];
         times = strrep([meta1.textdata(2:end,2);meta2.textdata(2:end,2)], '_','-');
@@ -142,7 +49,7 @@ for w = 1 : 1
                 elseif NC_007384.Sequence{has_plasmid(i,1)}(end)~='N'
                     group(i) = 3;
                 else
-                    group(i) = 2;
+                    error('should not occur')
                 end
             end
             if ismember(ids{i}, LN624486.Header)
@@ -170,15 +77,15 @@ for w = 1 : 1
         weights(dont_use_seqs) = 0;
 
         indices = [];
-        for i = 1 : 200
+        for i = 1 : 400
             use_weights = weights;
             use_weights(indices) = 0;
             indices = [indices, randsample(length(weights), 1, true, use_weights)];
         end
         use_seqs = sort(indices);
 
-        segs_files(1).name = 'SonFlex_NC_007384_concat.aln';
-        segs_files(2).name = 'LN624486_SonFlex_Over70_26082022.aln';
+        segs_files(1).name = 'chromosome_concat.aln';
+        segs_files(2).name = 'SonFlex_LN624486_over80.filtered95.aln'
     %     segs_files(3).name = 'SonFlex_NC_007385_Over70_23082022.aln';
 
         segments = {'NC_007384','LN624486'};
@@ -196,10 +103,10 @@ for w = 1 : 1
                 if contains(line, 'insert_alignment')
                     for i = 1 : length(segments)
                         fprintf(g, '\t<data id="%s">\n',segments{i});
-                        if startsWith(segs_files(i).name,'LN')
-                            fasta = fastaread(['data/Aln_Trees/LN624486_MDR_plasmid_aln/' segs_files(i).name]);
+                        if startsWith(segs_files(i).name,'SonFlex')
+                            fasta = fastaread(['data/pksr100/' segs_files(i).name]);
                         else
-                            fasta = fastaread(['data/Aln_Trees/FlexSon_Ss046/' segs_files(i).name]);
+                            fasta = fastaread(['data/' segs_files(i).name]);
                         end
 
                         seq_length(i) = length(fasta(1).Sequence);
@@ -218,8 +125,8 @@ for w = 1 : 1
                             % add dummy alignment for inititalization
                             fprintf(g, '\t<data id="dummy">\n');
                             for j = 1 : length(use_seqs)
-                                length_vals = min(sum(~const1),length(fasta3(1).Sequence));
-                                start_vals = sum(~const1)+sum(~const2)+1;
+                                length_vals = length(sonnei(1).Sequence);
+                                start_vals = length(flex(1).Sequence)+1;
 
                                 ind = has_plasmid(use_seqs(j),i);
                                 if ind==-1
@@ -241,7 +148,7 @@ for w = 1 : 1
 
                     end
                 elseif contains(line, 'insert_run_header')
-                    fprintf(g, '\t\t<run id="mcmc" spec="coupledMCMC.CoupledMCMC" chainLength="10000000" deltaTemperature="0.00001" heatLikelihoodOnly="true" storeEvery="1000000" chains="2" resampleEvery="10000">\n');            
+                    fprintf(g, '\t\t<run id="mcmc" spec="coupledMCMC.CoupledMCMC" chainLength="10000000" storeEvery="1000000">\n');            
     %                  fprintf(g, '\t\t<run id="mcmc" spec="beast.core.MCMC" chainLength="10000000" storeEvery="1000000">\n');            
                 elseif contains(line, 'insert_nr_plasmids')
                     fprintf(g, strrep(line, 'insert_nr_plasmids', num2str(length(segments)-1)));
@@ -266,6 +173,8 @@ for w = 1 : 1
                     end  
                 elseif contains(line, 'insert_nr_segments')
                     fprintf(g, strrep(line, 'insert_nr_segments', num2str(length(segments))));
+                elseif contains(line, 'id="clockRate.c" name="stateNode">0.0005</parameter>')
+                    fprintf(g, strrep(line, '0.0005', '1.0'));
                 elseif contains(line, 'insert_parameters')
 
                     for s = 1 : length(segments)
@@ -275,9 +184,9 @@ for w = 1 : 1
                             for i = 1:3
                                 if sum(group(use_seqs)==i)>0
                                     if i==3
-                                        fprintf(g, '\t\t\t\t<parameter spec="parameter.RealParameter" id="mutationRate.s:%s.%d" name="stateNode" lower="2.5e-04" upper="4e-04">%f</parameter>\n',segments{s}, i, clockrates(1));
+                                        fprintf(g, '\t\t\t\t<parameter spec="parameter.RealParameter" id="mutationRate.s:%s.%d" name="stateNode">%f</parameter>\n',segments{s}, i, clockrates(i));
                                     else
-                                        fprintf(g, '\t\t\t\t<parameter spec="parameter.RealParameter" id="mutationRate.s:%s.%d" name="stateNode" lower="2.e-05" upper="1e-04">%f</parameter>\n',segments{s}, i, clockrates(2));
+                                        fprintf(g, '\t\t\t\t<parameter spec="parameter.RealParameter" id="mutationRate.s:%s.%d" name="stateNode">%f</parameter>\n',segments{s}, i, clockrates(i));
                                     end
                                     fprintf(g, '\t\t\t\t<parameter spec="parameter.RealParameter" id="kappa.s:%s.%d" lower="0.0" name="stateNode">%f</parameter>\n',segments{s},i, lognrnd(0,0.5,1));
                                     fprintf(g, '\t\t\t\t<parameter spec="parameter.RealParameter" id="gammaShape.s:%s.%d" name="stateNode">%f</parameter>\n',segments{s},i, lognrnd(0,0.5,1));
@@ -360,10 +269,10 @@ for w = 1 : 1
                     fprintf(g, '\t\t\t\t</transformations>\n');
                     fprintf(g, '\t\t\t\t<transformations id="AVMNLogTransform.h1n1pdm_NA" spec="operator.kernel.Transform$LogTransform">\n');
                     for s = 1 : length(segments)
+                        % fprintf(g, '\t\t\t\t\t<f idref="clockRate.c"/>\n');
                         if s==1 
                             for i = 1:3
                                 if sum(group(use_seqs)==i)>0
-%                                     fprintf(g, '\t\t\t\t\t<f idref="mutationRate.s:%s.%d"/>\n', segments{s},i);
                                     fprintf(g, '\t\t\t\t\t<f idref="kappa.s:%s.%d"/>\n', segments{s},i);
                                     fprintf(g, '\t\t\t\t\t<f idref="gammaShape.s:%s.%d"/>\n', segments{s},i);
                                 end
@@ -377,6 +286,11 @@ for w = 1 : 1
                     fprintf(g, '\t\t\t\t</transformations>\n');
                     fprintf(g, '\t\t\t\t<kernelDistribution id="KernelDistribution$Bactrian.7" spec="operator.kernel.KernelDistribution$Bactrian"/>\n');                
                     fprintf(g, '\t\t\t</operator>\n');
+
+                    % fprintf(g, '\t\t\t\t<operator id="ClockRateScaler.s" spec="AdaptableOperatorSampler" parameter="@clockRate.c" weight="0.1" operator="@AVMNOperator">\n');
+                    % fprintf(g, '\t\t\t\t\t<operator id="ClockRateScalerX.s" spec="kernel.BactrianScaleOperator" parameter="@clockRate.c" scaleFactor="0.1" upper="10.0" weight="0.1"/>\n');
+                    % fprintf(g, '\t\t\t\t</operator>\n');
+
 
                     for s = 1 : length(segments)
                         if s==1 
@@ -403,21 +317,23 @@ for w = 1 : 1
                                 end
                             end
                         else
-                            fprintf(g, '\t\t\t\t<operator id="MutationScaler.s:%s" spec="AdaptableOperatorSampler" parameter="@mutationRate.s:%s" weight="0.1" operator="@AVMNOperator">\n', segments{s}, segments{s});
-                            fprintf(g, '\t\t\t\t\t<operator id="MutationScalerX.s:%s" spec="kernel.BactrianScaleOperator" parameter="@mutationRate.s:%s" scaleFactor="0.1" upper="10.0" weight="0.1"/>\n', segments{s},segments{s});
-                            fprintf(g, '\t\t\t\t</operator>\n');
 
-                            fprintf(g, '\t\t\t\t<operator id="KappaScaler.s:%s" spec="AdaptableOperatorSampler" parameter="@kappa.s:%s" weight="0.01" operator="@AVMNOperator">\n', segments{s}, segments{s});
-                            fprintf(g, '\t\t\t\t\t<operator id="KappaScalerX.s:%s" spec="kernel.BactrianScaleOperator" parameter="@kappa.s:%s" scaleFactor="0.1" upper="10.0" weight="0.1"/>\n', segments{s},segments{s});
-                            fprintf(g, '\t\t\t\t</operator>\n');
+                        fprintf(g, '\t\t\t\t<operator id="MutationRateScaler.s:%s" spec="AdaptableOperatorSampler" parameter="@mutationRate.s:%s" weight="0.01" operator="@AVMNOperator">\n', segments{s}, segments{s});
+                        fprintf(g, '\t\t\t\t\t<operator id="MutationRateScalerX.s:%s" spec="kernel.BactrianScaleOperator" parameter="@mutationRate.s:%s" scaleFactor="0.1" upper="10.0" weight="0.1"/>\n', segments{s},segments{s});
+                        fprintf(g, '\t\t\t\t</operator>\n');
 
-                            fprintf(g, '\t\t\t\t<operator id="FrequenciesExchanger.s:%s" spec="AdaptableOperatorSampler" weight="0.01" parameter="@freqParameter.s:%s" operator="@AVMNOperator">\n', segments{s}, segments{s});
-                            fprintf(g, '\t\t\t\t\t<operator id="FrequenciesExchangerX.s:%s" spec="operator.kernel.BactrianDeltaExchangeOperator" delta="0.01" weight="0.1" parameter="@freqParameter.s:%s"/>\n', segments{s}, segments{s});
-                            fprintf(g, '\t\t\t\t</operator>\n');
 
-                            fprintf(g, '\t\t\t\t<operator id="alpha_scaler.%s" spec="AdaptableOperatorSampler" parameter="@gammaShape.s:%s" weight="0.01" operator="@AVMNOperator">\n', segments{s}, segments{s});
-                            fprintf(g, '\t\t\t\t\t<operator id="alpha_scalerX.s:%s" spec="kernel.BactrianScaleOperator" parameter="@gammaShape.s:%s" scaleFactor="0.1" upper="10.0" weight="0.1"/>\n', segments{s},segments{s});
-                            fprintf(g, '\t\t\t\t</operator>\n');
+                        fprintf(g, '\t\t\t\t<operator id="KappaScaler.s:%s" spec="AdaptableOperatorSampler" parameter="@kappa.s:%s" weight="0.01" operator="@AVMNOperator">\n', segments{s}, segments{s});
+                        fprintf(g, '\t\t\t\t\t<operator id="KappaScalerX.s:%s" spec="kernel.BactrianScaleOperator" parameter="@kappa.s:%s" scaleFactor="0.1" upper="10.0" weight="0.1"/>\n', segments{s},segments{s});
+                        fprintf(g, '\t\t\t\t</operator>\n');
+
+                        fprintf(g, '\t\t\t\t<operator id="FrequenciesExchanger.s:%s" spec="AdaptableOperatorSampler" weight="0.01" parameter="@freqParameter.s:%s" operator="@AVMNOperator">\n', segments{s}, segments{s});
+                        fprintf(g, '\t\t\t\t\t<operator id="FrequenciesExchangerX.s:%s" spec="operator.kernel.BactrianDeltaExchangeOperator" delta="0.01" weight="0.1" parameter="@freqParameter.s:%s"/>\n', segments{s}, segments{s});
+                        fprintf(g, '\t\t\t\t</operator>\n');
+
+                        fprintf(g, '\t\t\t\t<operator id="alpha_scaler.%s" spec="AdaptableOperatorSampler" parameter="@gammaShape.s:%s" weight="0.01" operator="@AVMNOperator">\n', segments{s}, segments{s});
+                        fprintf(g, '\t\t\t\t\t<operator id="alpha_scalerX.s:%s" spec="kernel.BactrianScaleOperator" parameter="@gammaShape.s:%s" scaleFactor="0.1" upper="10.0" weight="0.1"/>\n', segments{s},segments{s});
+                        fprintf(g, '\t\t\t\t</operator>\n');
 
 
                         end
@@ -437,11 +353,11 @@ for w = 1 : 1
                         if s==1 
                             for i = 1:3
                                 if sum(group(use_seqs)==i)>0
-    %                                 fprintf(g, '\t\t\t\t\t<downParameter idref="mutationRate.s:%s.%d"/>\n', segments{s},i);
+                                    fprintf(g, '\t\t\t\t\t<parameter idref="mutationRate.s:%s.%d"/>\n', segments{s},i);
                                 end
                             end
                         else
-                            fprintf(g, '\t\t\t\t\t<downParameter idref="mutationRate.s:%s"/>\n', segments{s});
+                            fprintf(g, '\t\t\t\t\t<parameter idref="mutationRate.s:%s"/>\n', segments{s});
                         end
                     end
                  elseif contains(line, 'insert_muts_par')
@@ -481,54 +397,53 @@ for w = 1 : 1
 
                     end
                 elseif contains(line, 'insert_tree_likelihood')
+                    length_for_weights = zeros(0,0);
                     for s = 1 : length(segments)
                         if s==1 
                             for i = 1:3
                                 if sum(group(use_seqs)==i)>0
                                     if i==1
-                                        mutrate= length(fasta3(1).Sequence)/sum(~const1);
-                                        range=[1, sum(~const1)];
+                                        range=[1, length(flex(1).Sequence)];
                                     elseif i==3
-                                        mutrate=1;
-                                        range=[sum(~const1)+sum(~const2)+1, length(fasta_comb(1).Sequence)-10];
-                                    else
-                                        er
+                                        range=[length(flex(1).Sequence)+1, length(fasta_comb(1).Sequence)];
                                     end
+
+                                    length_for_weights = [length_for_weights range(2)-range(1)];
 
                                     fprintf(g, '\t\t\t\t\t<distribution id="treeLikelihood.%s.%d" spec="ThreadedTreeLikelihood" tree="@%s.tree" useAmbiguities="true">\n',segments{s},i,segments{s});
                                     fprintf(g, '\t\t\t\t\t\t<data id="%s.%d" spec="FilteredAlignment" filter="%d-%d" data="@%s"/>\n', segments{s}, i, range(1), range(2), segments{s});
-                                    fprintf(g, '\t\t\t\t\t\t<siteModel id="SiteModel.s:%s.%d" spec="SiteModel"  gammaCategoryCount="4" shape="@gammaShape.s:%s.%d">\n',segments{s},i,segments{s},i);
+                                    fprintf(g, '\t\t\t\t\t\t<siteModel id="SiteModel.s:%s.%d" spec="SiteModel"  gammaCategoryCount="4" shape="@gammaShape.s:%s.%d" mutationRate="@mutationRate.s:%s.%d">\n',segments{s},i,segments{s},i,segments{s},i);
     %                                 fprintf(g, '\t\t\t\t\t\t<parameter spec="parameter.RealParameter" estimate="false" name="mutationRate">%f</parameter>\n', mutrate);
 
                                     fprintf(g, '\t\t\t\t\t\t\t<substModel id="hky.s:%s.%d" spec="HKY" kappa="@kappa.s:%s.%d">\n',segments{s},i,segments{s},i);
                                     fprintf(g, '\t\t\t\t\t\t\t\t<frequencies id="estimatedFreqs.s:%s.%d" spec="Frequencies" frequencies="@freqParameter.s:%s.%d"/>\n',segments{s},i,segments{s},i);
                                     fprintf(g, '\t\t\t\t\t\t\t</substModel>\n');
                                     fprintf(g, '\t\t\t\t\t\t</siteModel>\n');
-                                    fprintf(g, '\t\t\t\t\t\t<branchRateModel id="StrictClock.%s.%d" spec="beast.base.evolution.branchratemodel.StrictClockModel" clock.rate="@mutationRate.s:%s.%d"/>\n',segments{s},i,segments{s},i);
+                                    fprintf(g, '\t\t\t\t\t\t<branchRateModel id="StrictClock.%s.%d" spec="beast.base.evolution.branchratemodel.StrictClockModel" clock.rate="@clockRate.c"/>\n',segments{s},i);
                                     fprintf(g, '\t\t\t\t\t</distribution>\n');
                                 end
                             end
                         else
                             fprintf(g, '\t\t\t\t\t<distribution id="treeLikelihood.%s" spec="ThreadedTreeLikelihood" tree="@%s.tree" useAmbiguities="true" data="@%s">\n',segments{s},segments{s},segments{s});
-                            fprintf(g, '\t\t\t\t\t\t<siteModel id="SiteModel.s:%s" spec="SiteModel"  gammaCategoryCount="4" shape="@gammaShape.s:%s">\n',segments{s},segments{s});
+                            fprintf(g, '\t\t\t\t\t\t<siteModel id="SiteModel.s:%s" spec="SiteModel"  gammaCategoryCount="4" shape="@gammaShape.s:%s" mutationRate="@mutationRate.s:%s">\n',segments{s},segments{s},segments{s});
                             fprintf(g, '\t\t\t\t\t\t\t<substModel id="hky.s:%s" spec="HKY" kappa="@kappa.s:%s">\n',segments{s},segments{s});
                             fprintf(g, '\t\t\t\t\t\t\t\t<frequencies id="estimatedFreqs.s:%s" spec="Frequencies" frequencies="@freqParameter.s:%s"/>\n',segments{s},segments{s});
                             fprintf(g, '\t\t\t\t\t\t\t</substModel>\n');
                             fprintf(g, '\t\t\t\t\t\t</siteModel>\n');
-                            fprintf(g, '\t\t\t\t\t\t<branchRateModel id="StrictClock.%s" spec="beast.base.evolution.branchratemodel.StrictClockModel" clock.rate="@mutationRate.s:%s"/>\n',segments{s},segments{s});
+                            fprintf(g, '\t\t\t\t\t\t<branchRateModel id="StrictClock.%s" spec="beast.base.evolution.branchratemodel.StrictClockModel" clock.rate="@clockRate.c"/>\n',segments{s});
                             fprintf(g, '\t\t\t\t\t</distribution>\n');
                         end
                     end
                 elseif contains(line, 'insert_weights')
+                    fprintf(g, '%d %d ', length_for_weights(1), length_for_weights(2));
                     for i = 1 : length(segments)
                         if startsWith(segs_files(i).name,'LN')
                             fasta = fastaread(['data/Aln_Trees/LN624486_MDR_plasmid_aln/' segs_files(i).name]);
-                        else
-                            fasta = fastaread(['data/Aln_Trees/FlexSon_Ss046/' segs_files(i).name]);
+                            fprintf(g, '%d ', length(fasta(1).Sequence));
                         end
-
-                        fprintf(g, '%d ', length(fasta(1).Sequence));
                     end
+                    fprintf(g, '\n');
+
                 elseif contains(line, 'insert_seg_tree_state')
                     for i = 1 : length(segments)
                         fprintf(g, '\t\t\t\t<tree id="%s.tree" spec="beast.base.evolution.tree.Tree" name="stateNode">\n', segments{i});
@@ -556,7 +471,10 @@ for w = 1 : 1
                         fprintf(g, '\t\t\t\t<log idref="%s.tree"/>\n', segments{i});           
                         fprintf(g, '\t\t\t</logger>\n');
                     end
-
+                elseif contains(line, '<downParameter idref="clockRate.c"/>')
+                    % skip this line
+                elseif contains(line, '<operator id="FixMeanMutationRatesOperator"')
+                    fgets(f);fgets(f);fgets(f);fgets(f);fgets(f);
                 elseif contains(line, 'insert_stats_log')
                     for i = 1 : length(segments)
                         fprintf(g, '\t\t\t\t<log spec="TreeStatLogger" tree="@%s.tree"/>\n', segments{i});      

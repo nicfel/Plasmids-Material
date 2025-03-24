@@ -15,7 +15,7 @@ setwd(this.dir)
 plasmids = c("NC_009345","NC_009346","NC_009347")
 for (p in plasmids){
   print(p)
-  system(paste("/Applications/BEAST\\ 2.6.7/bin/logcombiner -b 0 -log ./combined/Sonnei_equal_", p, ".trees -log ./combined/Sonnei_equal.", p, ".trees -o ./combined/SonneiComp.", p,".trees", sep=""))
+  system(paste("/Applications/BEAST\\ 2.7.6/bin/logcombiner -b 0 -log ./combined/Sonnei_equal_", p, ".trees -log ./combined/Sonnei_equal.", p, ".trees -o ./combined/SonneiComp.", p,".trees", sep=""))
   
   
   

@@ -983,7 +983,7 @@ def loadNewick(tree_path,tip_regex='\|([0-9]+\-[0-9]+\-[0-9]+)',date_fmt='%Y-%m-
         ll.setAbsoluteTime(highestTip)
     return ll
 
-def loadNexus(tree_path,tip_regex='\|([0-9]+\-[0-9]+\-[0-9]+)',date_fmt='%Y-%m-%d',treestring_regex='tree [A-Za-z\_]+([0-9]+)',variableDate=True,absoluteTime=True,verbose=False,mostRecentSample=""):
+def loadNexus(tree_path,tip_regex='\|([0-9]+\-[0-9]+\-[0-9]+)',date_fmt='%Y-%m-%d',treestring_regex = r'tree [A-Za-z_]+(?:[0-9]+)?|TREE_[A-Z_]+',variableDate=True,absoluteTime=True,verbose=False,mostRecentSample=""):
     tipFlag=False
     tips={}
     tipNum=0
@@ -1022,7 +1022,7 @@ def loadNexus(tree_path,tip_regex='\|([0-9]+\-[0-9]+\-[0-9]+)',date_fmt='%Y-%m-%
             tipFlag=True
         if ';' in l:
             tipFlag=False
-
+    
     assert ll,'Regular expression failed to find tree string'
     ll.traverse_tree(verbose=verbose) ## traverse tree
     ll.sortBranches(verbose=verbose) ## traverses tree, sorts branches, draws tree

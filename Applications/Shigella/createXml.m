@@ -5,18 +5,22 @@ clear
 weights_name = {'equal','weighted'};
 
 for w = 1 : 1
-    for dataset_nr = 1 : 2
-
+    for dataset_nr = 1 : 3
         if dataset_nr==1
             %% Shigella sonnei
             meta = importdata('data/Sonnei_MonthYear_07082022.txt');
 
+            names = {'Sson_NC_007384_18122023_cleanGubbinsV241.filtered_polymorphic_sites.snpsites.fasta';
+                    'Sson_NC_007385_VP_over60.filtered95.aln';
+                    'Sson_NC_009345_spA_over70.full.aln';
+                    'Sson_NC_009346_spB_over90.full.aln';
+                    'Sson_NC_009347_spC_over90.full.aln'};
 
-            NC_007384 = struct2table(fastaread('data/Aln_Trees/Ss046_Sonnei_ref/Sson_NC_007384_29042022clean_gubbinsv241.filtered_polymorphic_sites.fasta'));
-            NC_007385 = struct2table(fastaread('data/Aln_Trees/Ss046_Sonnei_ref/NC_007385_plasmid_SonneiOnly_Over70_0408202.aln'));
-            NC_009345 = struct2table(fastaread('data/Aln_Trees/Ss046_Sonnei_ref/NC_009345_plasmid_SonneiOnly_Over50_26082022_full_clean30092022.aln'));
-            NC_009346 = struct2table(fastaread('data/Aln_Trees/Ss046_Sonnei_ref/NC_009346_plasmid_SonneiOnly_Over50_26082022_full_clean30092022.aln'));
-            NC_009347 = struct2table(fastaread('data/Aln_Trees/Ss046_Sonnei_ref/NC_009347_plasmid_SonneiOnly_Over50_26082022_full_clean30092022.aln'));
+            NC_007384 = struct2table(fastaread(['data/Sonnei/' names{1}]));
+            NC_007385 = struct2table(fastaread(['data/Sonnei/' names{2}]));
+            NC_009345 = struct2table(fastaread(['data/Sonnei/' names{3}]));
+            NC_009346 = struct2table(fastaread(['data/Sonnei/' names{4}]));
+            NC_009347 = struct2table(fastaread(['data/Sonnei/' names{5}]));
             ids = meta.textdata(2:end,1);
             times = strrep(meta.textdata(2:end,2), '_','-');
 
@@ -39,6 +43,7 @@ for w = 1 : 1
                     has_plasmid(i,5) = find(ismember(NC_009347.Header,ids{i}));
                 end     
             end
+            % das
 
             weights = (has_plasmid(:,2)>0) + (has_plasmid(:,3)>0) + (has_plasmid(:,4)>0) + (has_plasmid(:,5)>0)+ (has_plasmid(:,6)>0);
             
@@ -47,7 +52,7 @@ for w = 1 : 1
             end
             
             indices = [];
-            for i = 1 : 200
+            for i = 1 : 400
                 use_weights = weights;
                 use_weights(indices) = 0;
                 indices = [indices, randsample(length(weights), 1, true, use_weights)];
@@ -55,14 +60,152 @@ for w = 1 : 1
             use_seqs = sort(indices);
 
 
-            segs_files(1).name = 'Sson_NC_007384_29042022clean_gubbinsv241.filtered_polymorphic_sites.fasta';
-            segs_files(2).name = 'NC_007385_plasmid_SonneiOnly_Over70_0408202.aln';
-            segs_files(3).name = 'NC_009345_plasmid_SonneiOnly_Over50_26082022_full_clean30092022.aln';
-            segs_files(4).name = 'NC_009346_plasmid_SonneiOnly_Over50_26082022_full_clean30092022.aln';
-            segs_files(5).name = 'NC_009347_plasmid_SonneiOnly_Over50_26082022_full_clean30092022.aln';
+            segs_files(1).name = names{1};
+            segs_files(2).name = names{2};
+            segs_files(3).name = names{3};
+            segs_files(4).name = names{4};
+            segs_files(5).name = names{5};
             segments = {'NC_007384','NC_007385','NC_009345', 'NC_009346', 'NC_009347'};
 
-            f = fopen('sonnei_plasmid_info.tsv','w');
+            f = fopen('sonnei1_plasmid_info.tsv','w');
+            fprintf(f, 'id\ttimes\t%s\t%s\t%s\t%s\t%s\n',segments{1},segments{2},segments{3},segments{4},segments{5});
+            for i = 1 : size(has_plasmid,1)
+                fprintf(f, '%s\t%s-01\t%d\t%d\t%d\t%d\t%d\n',ids{i},times{i},...
+                    has_plasmid(i,1)~=-1,has_plasmid(i,2)~=-1,has_plasmid(i,3)~=-1,has_plasmid(i,4)~=-1,has_plasmid(i,5)~=-1);
+            end
+            fclose(f);
+
+        elseif dataset_nr==2
+            %% Shigella sonnei
+            meta = importdata('data/Sonnei_MonthYear_07082022.txt');
+
+            names = {'Sson_NC_007384_18122023_cleanGubbinsV241.filtered_polymorphic_sites.snpsites.fasta';
+                    'Sson_NC_007385_VP_over60.filtered95.aln';
+                    'Sson_NC_009345_strABsul2.full.aln';
+                    'Sson_NC_009346_spB_over90.full.aln';
+                    'Sson_NC_009347_spC_over90.full.aln'};
+
+            NC_007384 = struct2table(fastaread(['data/Sonnei/' names{1}]));
+            NC_007385 = struct2table(fastaread(['data/Sonnei/' names{2}]));
+            NC_009345 = struct2table(fastaread(['data/Sonnei/' names{3}]));
+            NC_009346 = struct2table(fastaread(['data/Sonnei/' names{4}]));
+            NC_009347 = struct2table(fastaread(['data/Sonnei/' names{5}]));
+            ids = meta.textdata(2:end,1);
+            times = strrep(meta.textdata(2:end,2), '_','-');
+
+
+            has_plasmid = -1*ones(length(ids), 6);
+            for i = 1 : length(ids)
+                if ismember(ids{i}, NC_007384.Header)
+                    has_plasmid(i,1) = find(ismember(NC_007384.Header,ids{i}));
+                end
+                if ismember(ids{i}, NC_007385.Header)
+                    has_plasmid(i,2) = find(ismember(NC_007385.Header,ids{i}));
+                end
+                if ismember(ids{i}, NC_009345.Header)
+                    has_plasmid(i,3) = find(ismember(NC_009345.Header,ids{i}));
+                end
+                if ismember(ids{i}, NC_009346.Header)
+                    has_plasmid(i,4) = find(ismember(NC_009346.Header,ids{i}));
+                end
+                if ismember(ids{i}, NC_009347.Header)
+                    has_plasmid(i,5) = find(ismember(NC_009347.Header,ids{i}));
+                end     
+            end
+            % das
+
+            weights = (has_plasmid(:,2)>0) + (has_plasmid(:,3)>0) + (has_plasmid(:,4)>0) + (has_plasmid(:,5)>0)+ (has_plasmid(:,6)>0);
+            
+            if w==1
+                weights = has_plasmid(:,1)>0;                
+            end
+            
+            indices = [];
+            for i = 1 : 400
+                use_weights = weights;
+                use_weights(indices) = 0;
+                indices = [indices, randsample(length(weights), 1, true, use_weights)];
+            end
+            use_seqs = sort(indices);
+
+
+            segs_files(1).name = names{1};
+            segs_files(2).name = names{2};
+            segs_files(3).name = names{3};
+            segs_files(4).name = names{4};
+            segs_files(5).name = names{5};
+            segments = {'NC_007384','NC_007385','NC_009345', 'NC_009346', 'NC_009347'};
+
+            f = fopen('sonnei2_plasmid_info.tsv','w');
+            fprintf(f, 'id\ttimes\t%s\t%s\t%s\t%s\t%s\n',segments{1},segments{2},segments{3},segments{4},segments{5});
+            for i = 1 : size(has_plasmid,1)
+                fprintf(f, '%s\t%s-01\t%d\t%d\t%d\t%d\t%d\n',ids{i},times{i},...
+                    has_plasmid(i,1)~=-1,has_plasmid(i,2)~=-1,has_plasmid(i,3)~=-1,has_plasmid(i,4)~=-1,has_plasmid(i,5)~=-1);
+            end
+            fclose(f);
+
+        elseif dataset_nr==3
+            %% Shigella sonnei
+            meta = importdata('data/Sonnei_MonthYear_07082022.txt');
+
+            names = {'Sson_NC_007384_18122023_cleanGubbinsV241.filtered_polymorphic_sites.snpsites.fasta';
+                    'Sson_NC_007385_VP_over60.filtered95.aln';
+                    'Sson_NC_009345_4AMRgenes.full.aln';
+                    'Sson_NC_009346_spB_over90.full.aln';
+                    'Sson_NC_009347_spC_over90.full.aln'};
+
+            NC_007384 = struct2table(fastaread(['data/Sonnei/' names{1}]));
+            NC_007385 = struct2table(fastaread(['data/Sonnei/' names{2}]));
+            NC_009345 = struct2table(fastaread(['data/Sonnei/' names{3}]));
+            NC_009346 = struct2table(fastaread(['data/Sonnei/' names{4}]));
+            NC_009347 = struct2table(fastaread(['data/Sonnei/' names{5}]));
+            ids = meta.textdata(2:end,1);
+            times = strrep(meta.textdata(2:end,2), '_','-');
+
+
+            has_plasmid = -1*ones(length(ids), 6);
+            for i = 1 : length(ids)
+                if ismember(ids{i}, NC_007384.Header)
+                    has_plasmid(i,1) = find(ismember(NC_007384.Header,ids{i}));
+                end
+                if ismember(ids{i}, NC_007385.Header)
+                    has_plasmid(i,2) = find(ismember(NC_007385.Header,ids{i}));
+                end
+                if ismember(ids{i}, NC_009345.Header)
+                    has_plasmid(i,3) = find(ismember(NC_009345.Header,ids{i}));
+                end
+                if ismember(ids{i}, NC_009346.Header)
+                    has_plasmid(i,4) = find(ismember(NC_009346.Header,ids{i}));
+                end
+                if ismember(ids{i}, NC_009347.Header)
+                    has_plasmid(i,5) = find(ismember(NC_009347.Header,ids{i}));
+                end     
+            end
+            % das
+
+            weights = (has_plasmid(:,2)>0) + (has_plasmid(:,3)>0) + (has_plasmid(:,4)>0) + (has_plasmid(:,5)>0)+ (has_plasmid(:,6)>0);
+            
+            if w==1
+                weights = has_plasmid(:,1)>0;                
+            end
+            
+            indices = [];
+            for i = 1 : 400
+                use_weights = weights;
+                use_weights(indices) = 0;
+                indices = [indices, randsample(length(weights), 1, true, use_weights)];
+            end
+            use_seqs = sort(indices);
+
+
+            segs_files(1).name = names{1};
+            segs_files(2).name = names{2};
+            segs_files(3).name = names{3};
+            segs_files(4).name = names{4};
+            segs_files(5).name = names{5};
+            segments = {'NC_007384','NC_007385','NC_009345', 'NC_009346', 'NC_009347'};
+
+            f = fopen('sonnei3_plasmid_info.tsv','w');
             fprintf(f, 'id\ttimes\t%s\t%s\t%s\t%s\t%s\n',segments{1},segments{2},segments{3},segments{4},segments{5});
             for i = 1 : size(has_plasmid,1)
                 fprintf(f, '%s\t%s-01\t%d\t%d\t%d\t%d\t%d\n',ids{i},times{i},...
@@ -71,12 +214,13 @@ for w = 1 : 1
             fclose(f);
 
 
-        elseif dataset_nr==2
+
+
+        elseif dataset_nr==4
             %% Shigella felxneri        
             meta = importdata('data/ShigFlex_01092022_YearMonth.txt');                        
-            NC_004337 = struct2table(fastaread('data/Aln_Trees/Flexneri_ref/Flex1_NC_007384.aln'));
-            NC_004851 = struct2table(fastaread('data/Aln_Trees/Flexneri_ref/NC_004851_plasmid_FlexneriOnly_Over70_24082022.aln'));
-            NC_004851 = struct2table(fastaread('data/Aln_Trees/Flexneri_ref/NC_004851_plasmid_FlexneriOnly_Over70_24082022.aln'));
+            NC_004337 = struct2table(fastaread('data/Flex/Sflex_NC_004337_21022024_NoSero6_cleanGubbinsV241.filtered_polymorphic_sites.fasta'));
+            NC_004851 = struct2table(fastaread('data/Flex/Sflex_NC_004851_27022024_over60.filtered95.aln'));
 
 
             ids = meta.textdata(2:end,1);
@@ -95,8 +239,8 @@ for w = 1 : 1
             use_seqs = find(has_plasmid(:,1)>0);
             use_seqs = sort(randsample(use_seqs, min(length(use_seqs),200)));
 
-            segs_files(1).name = 'Flex1_NC_007384.aln';
-            segs_files(2).name = 'NC_004851_plasmid_FlexneriOnly_Over70_24082022.aln';
+            segs_files(1).name = 'Sflex_NC_004337_21022024_NoSero6_cleanGubbinsV241.filtered_polymorphic_sites.fasta';
+            segs_files(2).name = 'Sflex_NC_004851_27022024_over60.filtered95.aln';
             segments = {'NC_004337','NC_004851'};
 
 
@@ -106,8 +250,12 @@ for w = 1 : 1
         for r = 0:2
             f = fopen('template.xml');
             if dataset_nr==1                
-                g = fopen(['xmls/Sonnei_' weights_name{w} '_rep' num2str(r) '.xml'], 'w');
-            else
+                g = fopen(['xmls/Sonnei1_' weights_name{w} '_rep' num2str(r) '.xml'], 'w');
+            elseif dataset_nr==2                
+                g = fopen(['xmls/Sonnei2_' weights_name{w} '_rep' num2str(r) '.xml'], 'w');
+            elseif dataset_nr==3                
+                g = fopen(['xmls/Sonnei3_' weights_name{w} '_rep' num2str(r) '.xml'], 'w');
+           else
                 g = fopen(['xmls/Flexneri_' weights_name{w} '_rep' num2str(r) '.xml'], 'w');
             end
 
@@ -120,9 +268,13 @@ for w = 1 : 1
                         if startsWith(segs_files(i).name,'LN')
                             fasta = fastaread(['data/Aln_Trees/LN624486_MDR_plasmid_aln/' segs_files(i).name]);
                         elseif dataset_nr==1
-                            fasta = fastaread(['data/Aln_Trees/Ss046_Sonnei_ref/' segs_files(i).name]);
-                        else
-                            fasta = fastaread(['data/Aln_Trees/Flexneri_ref/' segs_files(i).name]);
+                            fasta = fastaread(['data/Sonnei/' segs_files(i).name]);
+                        elseif dataset_nr==2
+                            fasta = fastaread(['data/Sonnei/' segs_files(i).name]);
+                        elseif dataset_nr==3
+                            fasta = fastaread(['data/Sonnei/' segs_files(i).name]);
+                       else
+                            fasta = fastaread(['data/Flex/' segs_files(i).name]);
                         end
 
                         seq_length(i) = length(fasta(1).Sequence);
@@ -136,14 +288,14 @@ for w = 1 : 1
                             else
                                 fprintf(g, '\t\t<sequence id="%s.%s" taxon="%s" totalcount="4" value="%s"/>\n',...
                                      segments{i}, fasta(ind).Header,...
-                                     fasta(ind).Header, fasta(ind).Sequence);
+                                     fasta(ind).Header, strrep(fasta(ind).Sequence, 'X','N'));
                             end
                         end
                         fprintf(g, '\t</data>\n');
 
                     end
                 elseif contains(line, 'insert_run_header')
-                 fprintf(g, '\t\t<run id="mcmc" spec="coupledMCMC.CoupledMCMC" chainLength="10000000" deltaTemperature="0.00001" heatLikelihoodOnly="true" storeEvery="1000000" chains="2" resampleEvery="10000">\n');            
+                 fprintf(g, '\t\t<run id="mcmc" spec="coupledMCMC.CoupledMCMC" chainLength="10000000" storeEvery="1000000" chains="2">\n');            
     %                  fprintf(g, '\t\t<run id="mcmc" spec="beast.core.MCMC" chainLength="10000000" storeEvery="1000000">\n');            
                 elseif contains(line, 'insert_nr_plasmids')
                     fprintf(g, strrep(line, 'insert_nr_plasmids', num2str(length(segments)-1)));
@@ -174,7 +326,7 @@ for w = 1 : 1
 
                     for s = 1 : length(segments)
                         fprintf(g, '\t\t\t\t<parameter spec="parameter.RealParameter" id="kappa.s:%s" lower="0.0" name="stateNode">%f</parameter>\n',segments{s}, lognrnd(0,0.5,1));
-                        fprintf(g, '\t\t\t\t<parameter spec="parameter.RealParameter" id="mutationRate.s:%s" name="stateNode">0.0005</parameter>\n',segments{s});
+                        fprintf(g, '\t\t\t\t<parameter spec="parameter.RealParameter" id="mutationRate.s:%s" name="stateNode">1</parameter>\n',segments{s});
                         fprintf(g, '\t\t\t\t<parameter spec="parameter.RealParameter" id="gammaShape.s:%s" name="stateNode">%f</parameter>\n',segments{s}, lognrnd(0,0.5,1));
                         fprintf(g, '\t\t\t\t<parameter spec="parameter.RealParameter" id="freqParameter.s:%s" dimension="4" lower="0.0" name="stateNode" upper="1.0">0.25</parameter>\n',segments{s});
                     end
@@ -201,18 +353,19 @@ for w = 1 : 1
                     end
                     fprintf(g, '\t\t\t\t</transformations>\n');
                     fprintf(g, '\t\t\t\t<transformations id="AVMNLogTransform.h1n1pdm_NA" spec="operator.kernel.Transform$LogTransform">\n');
+                        fprintf(g, '\t\t\t\t\t<f idref="clockRate.c"/>\n');
                     for s = 1 : length(segments)
-                        fprintf(g, '\t\t\t\t\t<f idref="mutationRate.s:%s"/>\n', segments{s});
                         fprintf(g, '\t\t\t\t\t<f idref="kappa.s:%s"/>\n', segments{s});
                         fprintf(g, '\t\t\t\t\t<f idref="gammaShape.s:%s"/>\n', segments{s});
                     end
                     fprintf(g, '\t\t\t\t</transformations>\n');
                     fprintf(g, '\t\t\t\t<kernelDistribution id="KernelDistribution$Bactrian.7" spec="operator.kernel.KernelDistribution$Bactrian"/>\n');                
-                    fprintf(g, '\t\t\t</operator>\n');                
+                    fprintf(g, '\t\t\t</operator>\n');  
+                    fprintf(g, '\t\t\t\t<operator id="ClockRateScaler.s" spec="AdaptableOperatorSampler" parameter="@clockRate.c" weight="0.1" operator="@AVMNOperator">\n');
+                    fprintf(g, '\t\t\t\t\t<operator id="ClockRateScalerX.s" spec="kernel.BactrianScaleOperator" parameter="@clockRate.c" scaleFactor="0.1" upper="10.0" weight="0.1"/>\n');
+                    fprintf(g, '\t\t\t\t</operator>\n');
+
                     for s = 1 : length(segments)
-                        fprintf(g, '\t\t\t\t<operator id="MutationScaler.s:%s" spec="AdaptableOperatorSampler" parameter="@mutationRate.s:%s" weight="0.1" operator="@AVMNOperator">\n', segments{s}, segments{s});
-                        fprintf(g, '\t\t\t\t\t<operator id="MutationScalerX.s:%s" spec="kernel.BactrianScaleOperator" parameter="@mutationRate.s:%s" scaleFactor="0.1" upper="10.0" weight="0.1"/>\n', segments{s},segments{s});
-                        fprintf(g, '\t\t\t\t</operator>\n');
                         fprintf(g, '\t\t\t\t<operator id="KappaScaler.s:%s" spec="AdaptableOperatorSampler" parameter="@kappa.s:%s" weight="0.01" operator="@AVMNOperator">\n', segments{s}, segments{s});
                         fprintf(g, '\t\t\t\t\t<operator id="KappaScalerX.s:%s" spec="kernel.BactrianScaleOperator" parameter="@kappa.s:%s" scaleFactor="0.1" upper="10.0" weight="0.1"/>\n', segments{s},segments{s});
                         fprintf(g, '\t\t\t\t</operator>\n');
@@ -226,7 +379,7 @@ for w = 1 : 1
 
                  elseif contains(line, 'insert_mut_par')
                      for s = 1 : length(segments)                   
-                         fprintf(g, '\t\t\t\t\t<downParameter idref="mutationRate.s:%s"/>\n', segments{s});
+                         fprintf(g, '\t\t\t\t\t<parameter idref="mutationRate.s:%s"/>\n', segments{s});
                      end
                  elseif contains(line, 'insert_muts_par')
     %                 for s = 1 : length(segments)                   
@@ -244,12 +397,12 @@ for w = 1 : 1
                     for i = 1 : length(segments)
                         fprintf(g, '\t\t\t\t\t<distribution id="treeLikelihood.%s" spec="ThreadedTreeLikelihood" tree="@%s.tree" useAmbiguities="true" data="@%s">\n',segments{i},segments{i},segments{i});
 
-                        fprintf(g, '\t\t\t\t\t\t<siteModel id="SiteModel.s:%s" spec="SiteModel"  gammaCategoryCount="4" shape="@gammaShape.s:%s">\n',segments{i},segments{i});
+                        fprintf(g, '\t\t\t\t\t\t<siteModel id="SiteModel.s:%s" spec="SiteModel"  gammaCategoryCount="4" shape="@gammaShape.s:%s" mutationRate="@mutationRate.s:%s">\n',segments{i},segments{i},segments{i});
                         fprintf(g, '\t\t\t\t\t\t\t<substModel id="hky.s:%s" spec="HKY" kappa="@kappa.s:%s">\n',segments{i},segments{i});
                         fprintf(g, '\t\t\t\t\t\t\t\t<frequencies id="estimatedFreqs.s:%s" spec="Frequencies" frequencies="@freqParameter.s:%s"/>\n',segments{i},segments{i});
                         fprintf(g, '\t\t\t\t\t\t\t</substModel>\n');
                         fprintf(g, '\t\t\t\t\t\t</siteModel>\n');
-                        fprintf(g, '\t\t\t\t\t\t<branchRateModel id="StrictClock.%s" spec="beast.base.evolution.branchratemodel.StrictClockModel" clock.rate="@mutationRate.s:%s"/>\n',segments{i},segments{i});
+                        fprintf(g, '\t\t\t\t\t\t<branchRateModel id="StrictClock.%s" spec="beast.base.evolution.branchratemodel.StrictClockModel" clock.rate="@clockRate.c"/>\n',segments{i});
 
     %                         fprintf(g, '\t\t\t\t\t\t<branchRateModel id="StrictClock.%s" spec="plasmids.ratemodel.EarlyLateRate" finalTime="100" clock.rate="@mutationRate.s:%s">\n',segments{i},segments{i});
     %                         fprintf(g, '\t\t\t\t\t\t\t<parameter name="lateRate">0.001</parameter>\n');
@@ -261,9 +414,13 @@ for w = 1 : 1
                         if startsWith(segs_files(i).name,'LN')
                             fasta = fastaread(['data/Aln_Trees/LN624486_MDR_plasmid_aln/' segs_files(i).name]);
                         elseif dataset_nr==1
-                            fasta = fastaread(['data/Aln_Trees/Ss046_Sonnei_ref/' segs_files(i).name]);
+                            fasta = fastaread(['data/Sonnei/' segs_files(i).name]);
+                        elseif dataset_nr==2
+                            fasta = fastaread(['data/Sonnei/' segs_files(i).name]);
+                        elseif dataset_nr==3
+                            fasta = fastaread(['data/Sonnei/' segs_files(i).name]);
                         else
-                            fasta = fastaread(['data/Aln_Trees/Flexneri_ref/' segs_files(i).name]);
+                            fasta = fastaread(['data/Flex/' segs_files(i).name]);
                         end
 
                         fprintf(g, '%d ', length(fasta(1).Sequence));
@@ -321,7 +478,11 @@ for w = 1 : 1
                 f_inf = fopen('individualtrees_template.xml');
                 % open the inference xml
                 if dataset_nr==1
-                    g = fopen(sprintf('xmls/Sonnei_%s_%s_rep%d.xml',weights_name{w}, segments{seg}, r), 'w');
+                    g = fopen(sprintf('xmls/Sonnei1_%s_%s_rep%d.xml',weights_name{w}, segments{seg}, r), 'w');
+                elseif dataset_nr==2
+                    g = fopen(sprintf('xmls/Sonnei2_%s_%s_rep%d.xml',weights_name{w}, segments{seg}, r), 'w');
+                elseif dataset_nr==3
+                    g = fopen(sprintf('xmls/Sonnei3_%s_%s_rep%d.xml',weights_name{w}, segments{seg}, r), 'w');
                 else
                     g = fopen(sprintf('xmls/Flexneri_%s_%s_rep%d.xml',weights_name{w}, segments{seg}, r), 'w');
                 end                
@@ -334,9 +495,13 @@ for w = 1 : 1
                         if startsWith(segs_files(seg).name,'LN')
                             fasta = fastaread(['data/Aln_Trees/LN624486_MDR_plasmid_aln/' segs_files(seg).name]);
                         elseif dataset_nr==1
-                            fasta = fastaread(['data/Aln_Trees/Ss046_Sonnei_ref/' segs_files(seg).name]);
+                            fasta = fastaread(['data/Sonnei/' segs_files(seg).name]);
+                        elseif dataset_nr==2
+                            fasta = fastaread(['data/Sonnei/' segs_files(seg).name]);
+                        elseif dataset_nr==3
+                            fasta = fastaread(['data/Sonnei/' segs_files(seg).name]);
                         else
-                            fasta = fastaread(['data/Aln_Trees/Flexneri_ref/' segs_files(seg).name]);
+                            fasta = fastaread(['data/Flex/' segs_files(seg).name]);
                         end
 
                         seq_length(seg) = length(fasta(1).Sequence);

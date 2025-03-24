@@ -1,4 +1,4 @@
-flex = fastaread('data/Aln_Trees/Flexneri_ref/Sflex_NC_004337_26082022clean_gubbinsv241.filtered_polymorphic_sites.fasta');
+flex = fastaread('data/Flex/Sflex_NC_004337_21022024_NoSero6_cleanGubbinsV241.filtered_polymorphic_sites.snpsites.fasta');
 pdist = zeros(length(flex), length(flex));
 for a = 1 : length(flex)
     disp(a)
@@ -13,7 +13,7 @@ for a = 1 : length(flex)
 end
 members = cell(0,0);
 already_clustered = [];
-min_dist=0.3;
+min_dist=0.1;
 c = 1;
 cl_size = 0;
 for i = 1:length(flex)
