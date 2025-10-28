@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><beast beautitemplate='Standard' beautistatus='' namespace="beast.core:beast.evolution.alignment:beast.evolution.tree.coalescent:beast.core.util:beast.evolution.nuc:beast.evolution.operators:beast.evolution.sitemodel:beast.evolution.substitutionmodel:beast.base.evolution.alignment:beast.pkgmgmt:beast.base.core:beast.base.inference:beast.base.evolution.tree.coalescent:beast.pkgmgmt:beast.base.core:beast.base.inference.util:beast.evolution.nuc:beast.base.evolution.operator:beast.base.inference.operator:beast.base.evolution.sitemodel:beast.base.evolution.substitutionmodel:beast.base.evolution.likelihood" required="BEAST.base v2.7.7:BEAST_CLASSIC v1.6.3" version="2.7">
+
+    <data
+id="dta"
+spec="Alignment"
+name="alignment">
+insert_tips
+    </data>
+
+    <map name="Uniform" >beast.base.inference.distribution.Uniform</map>
+
+    <map name="Exponential" >beast.base.inference.distribution.Exponential</map>
+
+    <map name="LogNormal" >beast.base.inference.distribution.LogNormalDistributionModel</map>
+
+    <map name="Normal" >beast.base.inference.distribution.Normal</map>
+
+    <map name="Beta" >beast.base.inference.distribution.Beta</map>
+
+    <map name="Gamma" >beast.base.inference.distribution.Gamma</map>
+
+    <map name="LaplaceDistribution" >beast.base.inference.distribution.LaplaceDistribution</map>
+
+    <map name="prior" >beast.base.inference.distribution.Prior</map>
+
+    <map name="InverseGamma" >beast.base.inference.distribution.InverseGamma</map>
+
+    <map name="OneOnX" >beast.base.inference.distribution.OneOnX</map>
+
+    <run id="mcmc" spec="MCMC" chainLength="10000000">
+        <state id="state" spec="State" storeEvery="5000">
+            <tree id="Tree.t:dta" spec="beast.base.evolution.tree.Tree" name="stateNode">
+                <trait id="dateTrait.t:dta" spec="beast.base.evolution.tree.TraitSet" dateFormat="yyyy-M-dd" traitname="date" value="insert_dates">
+                    <taxa id="TaxonSet.dta" spec="TaxonSet">
+                        <alignment idref="dta"/>
+                    </taxa>
+                </trait>
+                <taxonset idref="TaxonSet.dta"/>
+            </tree>
+            insertParams
+
+            <parameter id="clockRate.c:dta" spec="parameter.RealParameter" lower="0.0" name="stateNode">1.0</parameter>
+            <parameter id="gammaShape.s:dta" spec="parameter.RealParameter" lower="0.1" name="stateNode">1.0</parameter>
+            <parameter id="kappa.s:dta" spec="parameter.RealParameter" lower="0.0" name="stateNode">2.0</parameter>
+            <parameter id="freqParameter.s:dta" spec="parameter.RealParameter" dimension="4" lower="0.0" name="stateNode" upper="1.0">0.25</parameter>
+            <parameter id="popSize.t:dta" spec="parameter.RealParameter" lower="0.0" name="stateNode">0.3</parameter>
+        </state>
+        <init id="RandomTree.t:dta" spec="RandomTree" estimate="false" initial="@Tree.t:dta" taxa="@dta">
+            <populationModel id="ConstantPopulation0.t:dta" spec="ConstantPopulation">
+                <parameter id="randomPopSize.t:dta" spec="parameter.RealParameter" name="popSize">1.0</parameter>
+            </populationModel>
+        </init>
+        <distribution id="posterior" spec="CompoundDistribution">
+            <distribution id="prior" spec="CompoundDistribution">
+                <distribution id="CoalescentConstant.t:dta" spec="Coalescent">
+                    <populationModel id="ConstantPopulation.t:dta" spec="ConstantPopulation" popSize="@popSize.t:dta"/>
+                    <treeIntervals id="TreeIntervals.t:dta" spec="beast.base.evolution.tree.TreeIntervals" tree="@Tree.t:dta"/>
+                </distribution>
+                <prior id="ClockPrior.c:dta" name="distribution" x="@clockRate.c:dta">
+                    <Uniform id="Uniform.0" name="distr" upper="Infinity"/>
+                </prior>
+                <prior id="FrequenciesPrior.s:dta" name="distribution" x="@freqParameter.s:dta">
+                    <distr id="Dirichlet.0" spec="distribution.Dirichlet">
+                        <parameter id="RealParameter.19" spec="parameter.RealParameter" dimension="4" estimate="false" name="alpha">4.0 4.0 4.0 4.0</parameter>
+                    </distr>
+                </prior>
+                <prior id="GammaShapePrior.s:dta" name="distribution" x="@gammaShape.s:dta">
+                    <Exponential id="Exponential.0" name="distr">
+                        <parameter id="RealParameter.0" spec="parameter.RealParameter" estimate="false" name="mean">1.0</parameter>
+                    </Exponential>
+                </prior>
+                <prior id="KappaPrior.s:dta" name="distribution" x="@kappa.s:dta">
+                    <LogNormal id="LogNormalDistributionModel.0" name="distr">
+                        <parameter id="RealParameter.17" spec="parameter.RealParameter" estimate="false" name="M">1.0</parameter>
+                        <parameter id="RealParameter.18" spec="parameter.RealParameter" estimate="false" name="S">1.25</parameter>
+                    </LogNormal>
+                </prior>
+                <prior id="PopSizePrior.t:dta" name="distribution" x="@popSize.t:dta">
+                    <OneOnX id="OneOnX.1" name="distr"/>
+                </prior>
+                insert_prior
+            </distribution>
+            <distribution id="likelihood" spec="CompoundDistribution" useThreads="true">
+                <distribution id="treeLikelihood.dta" spec="ThreadedTreeLikelihood" data="@dta" tree="@Tree.t:dta">
+                    <siteModel id="SiteModel.s:dta" spec="SiteModel" gammaCategoryCount="4" shape="@gammaShape.s:dta">
+                        <parameter id="mutationRate.s:dta" spec="parameter.RealParameter" estimate="false" lower="0.0" name="mutationRate">1.0</parameter>
+                        <parameter id="proportionInvariant.s:dta" spec="parameter.RealParameter" estimate="false" lower="0.0" name="proportionInvariant" upper="1.0">0.0</parameter>
+                        <substModel id="hky.s:dta" spec="HKY" kappa="@kappa.s:dta">
+                            <frequencies id="estimatedFreqs.s:dta" spec="Frequencies" frequencies="@freqParameter.s:dta"/>
+                        </substModel>
+                    </siteModel>
+                    <branchRateModel id="StrictClock.c:dta" spec="beast.base.evolution.branchratemodel.StrictClockModel" clock.rate="@clockRate.c:dta"/>
+                </distribution>
+                insert_likelihood
+            </distribution>
+        </distribution>
+        insert_scaler
+        <operator id="StrictClockRateScaler.c:dta" spec="AdaptableOperatorSampler" weight="1.5">
+            <parameter idref="clockRate.c:dta"/>
+            <operator id="AVMNOperator.dta" spec="kernel.AdaptableVarianceMultivariateNormalOperator" allowNonsense="true" beta="0.05" burnin="400" initial="800" weight="0.1">
+                <transformations id="AVMNSumTransform.dta" spec="operator.kernel.Transform$LogConstrainedSumTransform">
+                    <f idref="freqParameter.s:dta"/>
+                </transformations>
+                <transformations id="AVMNLogTransform.dta" spec="operator.kernel.Transform$LogTransform">
+                    <f idref="clockRate.c:dta"/>
+                    <f idref="gammaShape.s:dta"/>
+                    <f idref="kappa.s:dta"/>
+                </transformations>
+                <transformations id="AVMNNoTransform.dta" spec="operator.kernel.Transform$NoTransform">
+                    <f idref="Tree.t:dta"/>
+                </transformations>
+            </operator>
+            <operator id="StrictClockRateScalerX.c:dta" spec="kernel.BactrianScaleOperator" parameter="@clockRate.c:dta" upper="10.0" weight="3.0"/>
+        </operator>
+        <operator id="strictClockUpDownOperator.c:dta" spec="AdaptableOperatorSampler" weight="1.5">
+            <parameter idref="clockRate.c:dta"/>
+            <tree idref="Tree.t:dta"/>
+            <operator idref="AVMNOperator.dta"/>
+            <operator id="strictClockUpDownOperatorX.c:dta" spec="operator.kernel.BactrianUpDownOperator" scaleFactor="0.75" weight="3.0">
+                <up idref="clockRate.c:dta"/>
+                <down idref="Tree.t:dta"/>
+            </operator>
+        </operator>
+        <operator id="gammaShapeScaler.s:dta" spec="AdaptableOperatorSampler" weight="0.05">
+            <parameter idref="gammaShape.s:dta"/>
+            <operator idref="AVMNOperator.dta"/>
+            <operator id="gammaShapeScalerX.s:dta" spec="kernel.BactrianScaleOperator" parameter="@gammaShape.s:dta" scaleFactor="0.5" upper="10.0" weight="0.1"/>
+        </operator>
+        <operator id="KappaScaler.s:dta" spec="AdaptableOperatorSampler" weight="0.05">
+            <parameter idref="kappa.s:dta"/>
+            <operator idref="AVMNOperator.dta"/>
+            <operator id="KappaScalerX.s:dta" spec="kernel.BactrianScaleOperator" parameter="@kappa.s:dta" scaleFactor="0.1" upper="10.0" weight="0.1"/>
+        </operator>
+        <operator id="FrequenciesExchanger.s:dta" spec="AdaptableOperatorSampler" weight="0.05">
+            <parameter idref="freqParameter.s:dta"/>
+            <operator idref="AVMNOperator.dta"/>
+            <operator id="FrequenciesExchangerX.s:dta" spec="operator.kernel.BactrianDeltaExchangeOperator" delta="0.01" weight="0.1">
+                <parameter idref="freqParameter.s:dta"/>
+            </operator>
+        </operator>
+        <operator id="CoalescentConstantBICEPSEpochTop.t:dta" spec="EpochFlexOperator" scaleFactor="0.1" tree="@Tree.t:dta" weight="2.0"/>
+        <operator id="CoalescentConstantBICEPSEpochAll.t:dta" spec="EpochFlexOperator" fromOldestTipOnly="false" scaleFactor="0.1" tree="@Tree.t:dta" weight="2.0"/>
+        <operator id="CoalescentConstantBICEPSTreeFlex.t:dta" spec="TreeStretchOperator" scaleFactor="0.01" tree="@Tree.t:dta" weight="2.0"/>
+        <operator id="CoalescentConstantTreeRootScaler.t:dta" spec="kernel.BactrianScaleOperator" rootOnly="true" scaleFactor="0.1" tree="@Tree.t:dta" upper="10.0" weight="3.0"/>
+        <operator id="CoalescentConstantUniformOperator.t:dta" spec="kernel.BactrianNodeOperator" tree="@Tree.t:dta" weight="30.0"/>
+        <operator id="CoalescentConstantSubtreeSlide.t:dta" spec="kernel.BactrianSubtreeSlide" tree="@Tree.t:dta" weight="15.0"/>
+        <operator id="CoalescentConstantNarrow.t:dta" spec="Exchange" tree="@Tree.t:dta" weight="15.0"/>
+        <operator id="CoalescentConstantWide.t:dta" spec="Exchange" isNarrow="false" tree="@Tree.t:dta" weight="3.0"/>
+        <operator id="CoalescentConstantWilsonBalding.t:dta" spec="WilsonBalding" tree="@Tree.t:dta" weight="3.0"/>
+        <operator id="PopSizeScaler.t:dta" spec="kernel.BactrianScaleOperator" parameter="@popSize.t:dta" upper="10.0" weight="3.0"/>
+        <logger id="tracelog" spec="Logger" fileName="$(filebase).log" logEvery="1000" model="@posterior" sanitiseHeaders="true" sort="smart">
+            <log idref="posterior"/>
+            <log idref="likelihood"/>
+            <log idref="prior"/>
+            <log idref="treeLikelihood.dta"/>
+            <log id="TreeHeight.t:dta" spec="beast.base.evolution.tree.TreeStatLogger" tree="@Tree.t:dta"/>
+            insert_log
+            <log idref="clockRate.c:dta"/>
+            <log idref="gammaShape.s:dta"/>
+            <log idref="kappa.s:dta"/>
+            <log idref="freqParameter.s:dta"/>
+            <log idref="popSize.t:dta"/>
+            <log idref="CoalescentConstant.t:dta"/>
+        </logger>
+        <logger id="screenlog" spec="Logger" logEvery="1000">
+            <log idref="posterior"/>
+            <log idref="likelihood"/>
+            <log idref="prior"/>
+        </logger>
+        <logger id="treelog.t:dta" spec="Logger" fileName="$(filebase)-$(tree).trees" logEvery="1000" mode="tree">
+            <log id="TreeWithMetaDataLogger.t:dta" spec="beast.base.evolution.TreeWithMetaDataLogger" tree="@Tree.t:dta"/>
+        </logger>
+        <logger id="treeWithTraitLogger.pInv" spec="Logger" fileName="pInv_tree_with_trait.trees" logEvery="10000" mode="tree">
+            <log id="treeWithTraitLoggerItem.t:dta" spec="beastclassic.evolution.tree.TreeWithTraitLogger" tree="@Tree.t:dta">
+                <metadata idref="posterior"/>
+            </log>
+        </logger>
+        <logger id="treeWithTraitLogger.spA" spec="Logger" fileName="spA_tree_with_trait.trees" logEvery="10000" mode="tree">
+            <log idref="treeWithTraitLoggerItem.t:dta"/>
+        </logger>
+        <operatorschedule id="OperatorSchedule" spec="OperatorSchedule"/>
+    </run>
+
+</beast>
