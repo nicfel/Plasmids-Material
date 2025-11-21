@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><beast beautitemplate='Standard' beautistatus='' namespace="beast.core:beast.evolution.alignment:beast.evolution.tree.coalescent:beast.core.util:beast.evolution.nuc:beast.evolution.operators:beast.evolution.sitemodel:beast.evolution.substitutionmodel:beast.base.evolution.alignment:beast.pkgmgmt:beast.base.core:beast.base.inference:beast.base.evolution.tree.coalescent:beast.pkgmgmt:beast.base.core:beast.base.inference.util:beast.evolution.nuc:beast.base.evolution.operator:beast.base.inference.operator:beast.base.evolution.sitemodel:beast.base.evolution.substitutionmodel:beast.base.evolution.likelihood" required="BEAST.base v2.7.3" version="2.7">
+
+    <data
+id="H3N2"
+spec="Alignment"
+name="alignment">
+
+		<sequence id="NC_007385.AUSMDU00032308" taxon="AUSMDU00032308" totalcount="4" value="CACCATGTCTGACCAcTAGAGATGCTACC--tGCTTGtACCaCTATTAAGtCaCCCCCTGGGCCTCCACCGTCgTGCACATCTGAGTACCACAGACGGGGGTGTCGCTCCCCGCGGACAACCTCCGGCCGTATGCGGGaCGGC"/>
+		<sequence id="NC_007385.AUSMDU00041668" taxon="AUSMDU00041668" totalcount="4" value="CACCATGTCTGACCAcTAGAGATGCTACCAGtGCTTGtACCaCTATTAAGtCaCCCCCTGGGCCTCCACCGTCgTGCACATCTGAGTACCACAGACGGGGGTGTCGCTCCCCGCGGACAACCTCCGGCCGTATGCGGGaCNNC"/>
+		<sequence id="NC_007385.AUSMDU00009989" taxon="AUSMDU00009989" totalcount="4" value="CACCgTGTtTGACCAATAGAGATGCTACCActGCTTGCACCGCTATTAAttcaCCCCCTGGGCCTaCACCGTCTTGCAaATCTGAGTGCCACAGACGGGGGTGTCGCTCCCCGCGGACAACCTCCGGCCGTATGCGGGGCGGC"/>
+		<sequence id="NC_007385.AUSMDU00009181" taxon="AUSMDU00009181" totalcount="4" value="CACCATGTCTGACCAATAGAGATGCTACCAGtGCTTGCACTGCTATTAAGtcaCCCCCTGGGCCTCtACCGTCgTGCACATCTGAGTGCCACAGACGGGGGTGTCGCTCCCCGCGGACAACCTCCGGCCGTATGCGGGGCGGC"/>
+		<sequence id="NC_007385.AUSMDU00009479" taxon="AUSMDU00009479" totalcount="4" value="CACCATGTCTGACCAATAGAGATGCTACCgGtGCTTGCACCGCTATcAAGtcaCCCCCTGaGCCTCCACCGTCTTGCACATCTAAGTGCCACAGACGGGGGTGTCGCTCCCCGCGGACAACCTCCGGCCGTATGCGGGGCGGC"/>
+		<sequence id="NC_007385.AUSMDU00009169" taxon="AUSMDU00009169" totalcount="4" value="CACCgTGTtTGACCAATAGAGATGCTACCActGCTTGCACCGCTATTAAttcaCCCCCTGGGCCTaCACCGTCTTGCAaATCTGAGTGCCACAGACGGGGGTGTCGCTCCCCGCGGACAACCTCCGGCCGTATGCGGGGCGGC"/>
+		<sequence id="NC_007385.AUSMDU00010006" taxon="AUSMDU00010006" totalcount="4" value="CACCgTGatTGACCAATAGAGATGCTACCActGCTTGCACCGCTATTAAttCaCCCCCTGGGCCTaCACCGTCTTGCAaATCTGAGTGCCACAGACGGGGGTGTCGCTCCCCGCGGACAACCTCCGGCCGTATGCGGGGCGGC"/>
+		<sequence id="NC_007385.AUSMDU00010012" taxon="AUSMDU00010012" totalcount="4" value="CACCgTGTtTGACCAATAGAGATGCTACCActGCTTGCACCGCTATTAAttCaCCCCCTGGGCCTaCACCGTCTTGCAaATCTGAGTGCCACAGACGGGGGTGTCGCTCCCCGCGGACAACCTCCGGCCGTATGCGGGGCGGC"/>
+		<sequence id="NC_007385.AUSMDU00010018" taxon="AUSMDU00010018" totalcount="4" value="CACCgTGTtTGACCAATAGAGATGCTACCActGCTTGCACCGCTATTAAttCaCCCCCTGGGCCTaCACCGTCTTGCAaATCTGAGTGCCACAGACGGGGGTGTCGCTCCCCGCGGACAACCTCCGGCCGTATGCGGGGCGGC"/>
+		<sequence id="NC_007385.AUSMDU00010028" taxon="AUSMDU00010028" totalcount="4" value="CACCgTGTtTNACCAATAGAGATGCTACCActGCTTGCACCGCTATTAAttCaCCCCCTGGGCCTaCACCGTCTTGCAaATCTGAGTGCCACAGACGGGGGTGTCGCTCCCCGCGGACAACCTCCGGCCGTATGCGGGGNGGC"/>
+		<sequence id="NC_007385.AUSMDU00010083" taxon="AUSMDU00010083" totalcount="4" value="CACCgTGatTGACCAATAGAGATGCTACCActGCTTGCACCGCTATTAAttCaCCCCCTGGGCCTaCACCGTCTTGCAaATCTGAGTGCCACAGACGGGGGTGTCGCTCCCCGCGGACAACCTCCGGCCGTATGCGGGGCGGC"/>
+		<sequence id="NC_007385.AUSMDU00006678" taxon="AUSMDU00006678" totalcount="4" value="CACCATGTCTGtCCAATAGAGATGCTACCAGtGCTTGtACCaCTATTAAGtcaCCCCCTGGGCCTCCACCGTCgTGCACATCTGAGTaCCACAGACGGGGGTGTCGCTCCCCGCGGACAACCTCCGGCCGTATGCGGGaCGGC"/>
+		<sequence id="NC_007385.AUSMDU00010097" taxon="AUSMDU00010097" totalcount="4" value="CACTATGTCTGACCAATAGAGATGCTACCAGtGCTTGCACTGCTATTAAGtCaCCCCCTGGGCCTCCACCGTtgTGCACATCTGAGTGCCACAGACGGGGGTGaCGCTCCCCGCGGACAACCTCCGGCCGTATGCGGGGCGGC"/>
+		<sequence id="NC_007385.AUSMDU00010251" taxon="AUSMDU00010251" totalcount="4" value="CACCgTGTtTGACCAATAGAGATGCTACCActGCTTGCACCGCTATTAAttCaCCCCCTGGGCCTaCACCGTCTTGCAaATCTGAGTGCCAnAGACGGGGGTGTCGCTCCCCGCGGACAACCTCCGGCCGTATGCGGGGCGGC"/>
+		<sequence id="NC_007385.AUSMDU00010917" taxon="AUSMDU00010917" totalcount="4" value="CACCATGTCTGACCAATAGAGATGtTACCAGtGCTTGtACCaCTATTAAGtCaCCCCtTGGGCCTCCACCGTCgTGCACATCTGAGTaCCACAGACGGGGGTGTCGCTCCCCGCGGACAACCTCCGGCCGTATGCGGGaCGGC"/>
+		<sequence id="NC_007385.AUSMDU00018490" taxon="AUSMDU00018490" totalcount="4" value="CACCATGTCTGACCAATAGAGATGCTACCAGtGCTTGCgtCGCTATTAAGtCaCCCCCTGGGCCTCCACCGgCTTGCACATCTGAGTGCCACAGACGGaGGTGTCGCTCCCCGCGGACAACCTCCGGCCGTATGCGGGGCGGC"/>
+		<sequence id="NC_007385.AUSMDU00022981" taxon="AUSMDU00022981" totalcount="4" value="CACCNTNTCTGtCCAATANNGATNCTACCAGtNCTTGtACCaCNATTAAGtCaCCCCNTGGGCCTCCACCGTCgTGCANATCTGAGTaCCACAGACGGGGGTGTCGCTCCCCGCGGACAACCTCCGGCCGTATGtGGGaNGGC"/>
+		<sequence id="NC_007385.AUSMDU00024110" taxon="AUSMDU00024110" totalcount="4" value="CACCATGTCTGACCAATAGAGATGCTACCAGtGCTTGtACCaCTATTAAGtCaCCCCCTGGGCtTCCACCGTCgTGCACATCTGAGTaCCACAGACGGGGGTGTCGCTCCCCGCGGACAACCTCCGGCCGTATGCtGGaCGGC"/>
+		<sequence id="NC_007385.AUSMDU00024824" taxon="AUSMDU00024824" totalcount="4" value="CAACATGTCTGACCAATAGAGATGCTACCAGtGCTTGtACCaCTATTAAGtCaCCCCCTGGGCCTCCACCGTCgTGCACATCTGAGTaCCACAGACGGGGGTGTCGCTCCCCGCGGACAACCTCCGGCCGTATGCGGGaCGGC"/>
+		<sequence id="NC_007385.AUSMDU00025433" taxon="AUSMDU00025433" totalcount="4" value="ANCCANGTCcAAtCgAaAGTagcNCcCCtAGtACCgGCAC-GtTcTTAAGCATCtCCCgaGaCCcCCgCCaTCgctCtNgTCcGGG-----AGATAaGGaaT-Ttatctttattatgtcctgcataattaata-CGaaGTaAT"/>
+		<sequence id="NC_007385.AUSMDU00029679" taxon="AUSMDU00029679" totalcount="4" value="CACCATGTCTGACCAcTAGAGATGCTACCAGtGCTTGtACCaCTATTAAGtCaCCCCCTGGGCCTCCACCGTCgTGCACATCTGAGTACCACAGACGGGGGTGTCGCTCCCCGCGGACAACCTCCGGCCGTATGCGGGaCGGC"/>
+		<sequence id="NC_007385.AUSMDU00037071" taxon="AUSMDU00037071" totalcount="4" value="CACCATGTCTGACCAcTAGAGATGCTACCAGtGCTTGtACCaCTATTAAGtCaCCCCCTGGGCCTCCACCGTCgTGCACATCTGAGTACCACAGACGGGGGTGTCGCTCCCCGCGGACAACCTCCGGCCGTATGCGGGaCGGC"/>
+		<sequence id="NC_007385.AUSMDU00038234" taxon="AUSMDU00038234" totalcount="4" value="CCCCGTGTCTGACCAATAGAGATGCTACCACtGCTTGCACCGCTATTAAttCaCCCCCTGGGCCTCCACCGTCTTGCAAATCTGAcTGCCACAGAnGGGGGTGTCGCTCCCCGCGGACAACCTCCGGCCGTATGCGGGGCGGC"/>
+		<sequence id="NC_007385.AUSMDU00040532" taxon="AUSMDU00040532" totalcount="4" value="CACCATGTCTGACCAcTAGAGATGCTACCAGtGCTTGtACCaCTATTAAGtCaCCCCCTGGGCCTCCACCGTCgTGCACATCTGAGTACCACAGACGGGGGTGTCGCTCCCCGCGGACAACCTCCGGCCGnATGCGGGaCGGC"/>
+		<sequence id="NC_007385.AUSMDU00044173" taxon="AUSMDU00044173" totalcount="4" value="CACCATGTCTGACCAATgGAGATGCTACCAGtGCTTGCACTGCTATTAgGtCaCCaCCTGGGCCTCCACCGTCgTGCACATCTGAGTGCCACAGACGGGGGTGTCGCTCCCCGCGGACAACCTCCGGCCGTATGCGGGGCGGC"/>
+		<sequence id="NC_007385.AUSMDU00045969" taxon="AUSMDU00045969" totalcount="4" value="CACCATGTCTGACCAATgGAGATGCTACCAGtGCTTGCACTGCTATTAgGtCaCCaCCTGGGCCTCCACCGTCgTGCACATCTGAGTGCCACAGACGGGGGTGTCGCTCCCCGCGGACAACCTCCGGCCGTATGCGGGGCGGC"/>
+    </data>
+
+    <map name="Uniform" >beast.base.inference.distribution.Uniform</map>
+
+    <map name="Exponential" >beast.base.inference.distribution.Exponential</map>
+
+    <map name="LogNormal" >beast.base.inference.distribution.LogNormalDistributionModel</map>
+
+    <map name="Normal" >beast.base.inference.distribution.Normal</map>
+
+    <map name="Beta" >beast.base.inference.distribution.Beta</map>
+
+    <map name="Gamma" >beast.base.inference.distribution.Gamma</map>
+
+    <map name="LaplaceDistribution" >beast.base.inference.distribution.LaplaceDistribution</map>
+
+    <map name="prior" >beast.base.inference.distribution.Prior</map>
+
+    <map name="InverseGamma" >beast.base.inference.distribution.InverseGamma</map>
+
+    <map name="OneOnX" >beast.base.inference.distribution.OneOnX</map>
+
+
+    <run id="mcmc" spec="MCMC" chainLength="50000000">
+        <state id="state" spec="State" storeEvery="5000">
+            <tree id="Tree.t:H3N2" spec="beast.base.evolution.tree.Tree" name="stateNode">
+                <trait id="dateTrait.t:H3N2" spec="beast.base.evolution.tree.TraitSet" traitname="date"  dateFormat="yyyy-M-dd"  value="AUSMDU00032308=2019-07-01,AUSMDU00041668=2020-02-01,AUSMDU00009989=2016-07-01,AUSMDU00009181=2016-08-01,AUSMDU00009479=2016-05-01,AUSMDU00009169=2016-07-01,AUSMDU00010006=2016-11-01,AUSMDU00010012=2016-12-01,AUSMDU00010018=2017-01-01,AUSMDU00010028=2017-01-01,AUSMDU00010083=2017-02-01,AUSMDU00006678=2017-03-01,AUSMDU00010097=2017-03-01,AUSMDU00010251=2017-10-01,AUSMDU00010917=2017-11-01,AUSMDU00018490=2018-07-01,AUSMDU00022981=2018-11-01,AUSMDU00024110=2018-12-01,AUSMDU00024824=2019-01-01,AUSMDU00025433=2019-01-01,AUSMDU00029679=2019-05-01,AUSMDU00037071=2019-10-01,AUSMDU00038234=2019-11-01,AUSMDU00040532=2020-01-01,AUSMDU00044173=2020-03-01,AUSMDU00045969=2020-04-01">
+                    <taxa id="TaxonSet.H3N2" spec="TaxonSet">
+                        <alignment idref="H3N2"/>
+                    </taxa>
+                </trait>
+                <taxonset idref="TaxonSet.H3N2"/>
+            </tree>
+            <parameter id="clockRate.c:H3N2" spec="parameter.RealParameter" lower="0.0" name="stateNode">1.0</parameter>
+            <parameter id="kappa.s:H3N2" spec="parameter.RealParameter" lower="0.0" name="stateNode">2.0</parameter>
+            <parameter id="gammaShape.s:H3N2" spec="parameter.RealParameter" lower="0.1" name="stateNode">1.0</parameter>
+            <parameter id="popSize.t:H3N2" spec="parameter.RealParameter" lower="0.0" name="stateNode">0.3</parameter>
+            <parameter id="freqParameter.s:H3N2" spec="parameter.RealParameter" dimension="4" lower="0.0" name="stateNode" upper="1.0">0.25</parameter>
+        </state>
+        <init id="RandomTree.t:H3N2" spec="RandomTree" estimate="false" initial="@Tree.t:H3N2" taxa="@H3N2">
+            <populationModel id="ConstantPopulation0.t:H3N2" spec="ConstantPopulation">
+                <parameter id="randomPopSize.t:H3N2" spec="parameter.RealParameter" name="popSize">1.0</parameter>
+            </populationModel>
+        </init>
+        <distribution id="posterior" spec="CompoundDistribution">
+            <distribution id="prior" spec="CompoundDistribution">
+                <distribution id="CoalescentConstant.t:H3N2" spec="Coalescent">
+                    <populationModel id="ConstantPopulation.t:H3N2" spec="ConstantPopulation" popSize="@popSize.t:H3N2"/>
+                    <treeIntervals id="TreeIntervals.t:H3N2" spec="beast.base.evolution.tree.TreeIntervals" tree="@Tree.t:H3N2"/>
+                </distribution>
+                
+                <prior id="ClockPrior.c:H3N2" name="distribution" x="@clockRate.c:H3N2">
+                    <LogNormal id="LogNormalDistributionModel.NC_007384.1" name="distr"  meanInRealSpace="true" M="0.0005" S="2"/>
+                </prior>
+
+                <prior id="GammaShapePrior.s:H3N2" name="distribution" x="@gammaShape.s:H3N2">
+                    <Exponential id="Exponential.0" name="distr">
+                        <parameter id="RealParameter.0" spec="parameter.RealParameter" estimate="false" name="mean">1.0</parameter>
+                    </Exponential>
+                </prior>
+                <prior id="KappaPrior.s:H3N2" name="distribution" x="@kappa.s:H3N2">
+                    <LogNormal id="LogNormalDistributionModel.0" name="distr">
+                        <parameter id="RealParameter.1" spec="parameter.RealParameter" estimate="false" name="M">1.0</parameter>
+                        <parameter id="RealParameter.2" spec="parameter.RealParameter" estimate="false" name="S">1.25</parameter>
+                    </LogNormal>
+                </prior>
+                <prior id="PopSizePrior.t:H3N2" name="distribution" x="@popSize.t:H3N2">
+                    <LogNormal id="OneOnX.1" name="distr" M="0" S="4"/>
+                </prior>
+            </distribution>
+            <distribution id="likelihood" spec="CompoundDistribution" useThreads="true">
+                <distribution id="treeLikelihood.H3N2" spec="ThreadedTreeLikelihood" data="@H3N2" tree="@Tree.t:H3N2">
+                    <siteModel id="SiteModel.s:H3N2" spec="SiteModel" gammaCategoryCount="4" shape="@gammaShape.s:H3N2">
+                        <parameter id="mutationRate.s:H3N2" spec="parameter.RealParameter" estimate="false" lower="0.0" name="mutationRate">1.0</parameter>
+                        <parameter id="proportionInvariant.s:H3N2" spec="parameter.RealParameter" estimate="false" lower="0.0" name="proportionInvariant" upper="1.0">0.0</parameter>
+                        <substModel id="hky.s:H3N2" spec="HKY" kappa="@kappa.s:H3N2">
+                            <frequencies id="estimatedFreqs.s:H3N2" spec="Frequencies" frequencies="@freqParameter.s:H3N2"/>
+                        </substModel>
+                    </siteModel>
+                    <branchRateModel id="StrictClock.c:H3N2" spec="beast.base.evolution.branchratemodel.StrictClockModel" clock.rate="@clockRate.c:H3N2"/>
+                </distribution>
+            </distribution>
+        </distribution>
+        <operator id="StrictClockRateScaler.c:H3N2" spec="AdaptableOperatorSampler" weight="1.5">
+            <parameter idref="clockRate.c:H3N2"/>
+            <operator id="AVMNOperator.H3N2" spec="kernel.AdaptableVarianceMultivariateNormalOperator" allowNonsense="true" beta="0.05" burnin="400" initial="800" weight="0.1">
+                <transformations id="AVMNSumTransform.H3N2" spec="operator.kernel.Transform$LogConstrainedSumTransform">
+                    <f idref="freqParameter.s:H3N2"/>
+                </transformations>
+                <transformations id="AVMNLogTransform.H3N2" spec="operator.kernel.Transform$LogTransform">
+                    <f idref="clockRate.c:H3N2"/>
+                    <f idref="kappa.s:H3N2"/>
+                    <f idref="gammaShape.s:H3N2"/>
+                </transformations>
+                <transformations id="AVMNNoTransform.H3N2" spec="operator.kernel.Transform$NoTransform">
+                    <f idref="Tree.t:H3N2"/>
+                </transformations>
+            </operator>
+            <operator id="StrictClockRateScalerX.c:H3N2" spec="kernel.BactrianScaleOperator" parameter="@clockRate.c:H3N2" upper="10.0" weight="3.0"/>
+        </operator>
+        <operator id="strictClockUpDownOperator.c:H3N2" spec="AdaptableOperatorSampler" weight="1.5">
+            <parameter idref="clockRate.c:H3N2"/>
+            <tree idref="Tree.t:H3N2"/>
+            <operator idref="AVMNOperator.H3N2"/>
+            <operator id="strictClockUpDownOperatorX.c:H3N2" spec="operator.kernel.BactrianUpDownOperator" scaleFactor="0.75" weight="3.0">
+                <up idref="clockRate.c:H3N2"/>
+                <down idref="Tree.t:H3N2"/>
+            </operator>
+        </operator>
+        <operator id="KappaScaler.s:H3N2" spec="AdaptableOperatorSampler" weight="0.05">
+            <parameter idref="kappa.s:H3N2"/>
+            <operator idref="AVMNOperator.H3N2"/>
+            <operator id="KappaScalerX.s:H3N2" spec="kernel.BactrianScaleOperator" parameter="@kappa.s:H3N2" scaleFactor="0.1" upper="10.0" weight="0.1"/>
+        </operator>
+        <operator id="gammaShapeScaler.s:H3N2" spec="AdaptableOperatorSampler" weight="0.05">
+            <parameter idref="gammaShape.s:H3N2"/>
+            <operator idref="AVMNOperator.H3N2"/>
+            <operator id="gammaShapeScalerX.s:H3N2" spec="kernel.BactrianScaleOperator" parameter="@gammaShape.s:H3N2" scaleFactor="0.5" upper="10.0" weight="0.1"/>
+        </operator>
+        <operator id="CoalescentConstantBICEPSEpochTop.t:H3N2" spec="EpochFlexOperator" scaleFactor="0.1" tree="@Tree.t:H3N2" weight="2.0"/>
+        <operator id="CoalescentConstantBICEPSEpochAll.t:H3N2" spec="EpochFlexOperator" fromOldestTipOnly="false" scaleFactor="0.1" tree="@Tree.t:H3N2" weight="2.0"/>
+        <operator id="CoalescentConstantBICEPSTreeFlex.t:H3N2" spec="TreeStretchOperator" scaleFactor="0.01" tree="@Tree.t:H3N2" weight="2.0"/>
+        <operator id="CoalescentConstantTreeRootScaler.t:H3N2" spec="kernel.BactrianScaleOperator" rootOnly="true" scaleFactor="0.1" tree="@Tree.t:H3N2" upper="10.0" weight="3.0"/>
+        <operator id="CoalescentConstantUniformOperator.t:H3N2" spec="kernel.BactrianNodeOperator" tree="@Tree.t:H3N2" weight="30.0"/>
+        <operator id="CoalescentConstantSubtreeSlide.t:H3N2" spec="kernel.BactrianSubtreeSlide" tree="@Tree.t:H3N2" weight="15.0"/>
+        <operator id="CoalescentConstantNarrow.t:H3N2" spec="Exchange" tree="@Tree.t:H3N2" weight="15.0"/>
+        <operator id="CoalescentConstantWide.t:H3N2" spec="Exchange" isNarrow="false" tree="@Tree.t:H3N2" weight="3.0"/>
+        <operator id="CoalescentConstantWilsonBalding.t:H3N2" spec="WilsonBalding" tree="@Tree.t:H3N2" weight="3.0"/>
+        <operator id="PopSizeScaler.t:H3N2" spec="kernel.BactrianScaleOperator" parameter="@popSize.t:H3N2" upper="10.0" weight="3.0"/>
+        <operator id="FrequenciesExchanger.s:H3N2" spec="AdaptableOperatorSampler" weight="0.05">
+            <parameter idref="freqParameter.s:H3N2"/>
+            <operator idref="AVMNOperator.H3N2"/>
+            <operator id="FrequenciesExchangerX.s:H3N2" spec="operator.kernel.BactrianDeltaExchangeOperator" delta="0.01" weight="0.1">
+                <parameter idref="freqParameter.s:H3N2"/>
+            </operator>
+        </operator>
+        <logger id="tracelog" spec="Logger" fileName="$(filebase).log" logEvery="50000" model="@posterior" sanitiseHeaders="true" sort="smart">
+            <log idref="posterior"/>
+            <log idref="likelihood"/>
+            <log idref="prior"/>
+            <log idref="treeLikelihood.H3N2"/>
+            <log id="TreeHeight.t:H3N2" spec="beast.base.evolution.tree.TreeStatLogger" tree="@Tree.t:H3N2"/>
+            <log idref="clockRate.c:H3N2"/>
+            <log idref="kappa.s:H3N2"/>
+            <log idref="gammaShape.s:H3N2"/>
+            <log idref="popSize.t:H3N2"/>
+            <log idref="CoalescentConstant.t:H3N2"/>
+            <log idref="freqParameter.s:H3N2"/>
+        </logger>
+        <logger id="screenlog" spec="Logger" logEvery="50000">
+            <log idref="posterior"/>
+            <log idref="likelihood"/>
+            <log idref="prior"/>
+        </logger>
+        <logger id="treelog.t:H3N2" spec="Logger" fileName="$(filebase).trees" logEvery="50000" mode="tree">
+            <log id="TreeWithMetaDataLogger.t:H3N2" spec="beast.base.evolution.TreeWithMetaDataLogger" tree="@Tree.t:H3N2"/>
+        </logger>
+        <operatorschedule id="OperatorSchedule" spec="OperatorSchedule"/>
+    </run>
+
+</beast>
+
+
+
+
